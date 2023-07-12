@@ -1,0 +1,9 @@
+.small-space {
+    margin-top: 4px;
+}
+.custom-table-width {
+    max-width: 50%; /* Remplacez la valeur par la largeur souhaitée en pixels */
+}
+.border-bottom {
+    border-bottom: 1px solid #ccc; /* Remplacez la couleur par celle souhaitée */
+}
