@@ -14,8 +14,34 @@ export class EleveComponent implements OnInit {
 
   dataSource = []
 
+  filteredData: any[] = [];
+  searchText = '';
+
   constructor(private eleveService: EleveService,
               public dialog: MatDialog) { }
+
+  onSearchChange() {
+    // Reset the filteredData array
+    this.filteredData = [];
+
+    // Check if the search text is empty
+    if (!this.searchText) {
+      this.filteredData = this.dataSource;
+      return;
+    }
+
+    // Perform the search based on the searchText
+    this.filteredData = this.dataSource.filter(item => {
+      // Customize the search criteria as per your requirements
+      const fullName = `${item.nom} ${item.prenom}`.toLowerCase();
+      const fullNameInv = `${item.prenom} ${item.nom}`.toLowerCase();
+
+      return (
+          fullName.includes(this.searchText.toLowerCase()) ||
+          fullNameInv.includes(this.searchText.toLowerCase())
+      );
+    });
+  }
 
   ngOnInit(): void {
     this.getAllElevesActive();
@@ -30,6 +56,8 @@ export class EleveComponent implements OnInit {
         (res: any) => {
           console.log(res);
           this.dataSource = res;
+          this.filteredData = res;
+
         },
         (err: any) => {
           console.log(err);
