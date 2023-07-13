@@ -1,0 +1,44 @@
+.black{
+    background-color: black;
+}
+
+.appTitle{
+    font-weight: 600;
+}
+
+.active a{
+    background-color: #0A756B !important;
+
+}
+
+.nav-link{
+    background-color: #00B0A0;
+    color : white !important;
+    padding: 1px 10px !important;
+}
+
+
+.sidebar .nav i {
+    font-size: 20px !important;
+
+}
+
+.logo {
+    padding: 15px 0px 0px;}
+
+.nav-wrap{
+    overflow: auto;
+}
+
+.navig{
+    max-height: 60vh;}
+
+.logout{
+    position: fixed;
+    bottom: 3.5rem;
+    width: 260px;
+}
+
+.logout a{
+    background-color: #DB1A53;
+}

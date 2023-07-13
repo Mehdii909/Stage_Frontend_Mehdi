@@ -5,12 +5,14 @@ import { RouterModule } from '@angular/router';
 import { FooterComponent } from './footer/footer.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-  ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatButtonModule,
+    ],
   declarations: [
     FooterComponent,
     NavbarComponent,

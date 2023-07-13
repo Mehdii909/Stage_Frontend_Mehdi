@@ -1,0 +1,12 @@
+.notification{
+    background-color: #00B0A0;
+}
+
+.dropdown-item:hover{
+    background-color: #0A756B !important;
+
+}
+
+.navbarCol{
+    background-color: rgba(232, 225, 225, 0.8) !important;
+}
