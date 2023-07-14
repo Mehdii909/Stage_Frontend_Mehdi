@@ -15,6 +15,7 @@ export class EleveComponent implements OnInit {
   dataSource = []
 
   filteredData: any[] = [];
+
   searchText = '';
 
   constructor(private eleveService: EleveService,
@@ -148,7 +149,7 @@ export class DialogEleve {
       userRole: 'ROLE_ELEVE'
     };
 
-    this.data.etat = 'actif';
+    this.data.etat = 'activer';
 
     const el = {
       nom: this.data.nom,
@@ -213,8 +214,6 @@ export class EditDialogEleve {
       numTels: this.data.numTels,
       user: this.data.user
     };
-    console.log(id);
-    console.log(el);
     this.eleveService.updateEleve(id, el).subscribe((res: any) => {
       // this.showNotification('top', 'right', 'Le camion a été modifier', 'success');
       this.dialogRef.close();

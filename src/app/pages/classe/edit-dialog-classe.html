@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Modifier la classe</h2>
+
+<mat-dialog-content class="mat-typography">
+    <form>
+        <div class="form-group">
+            <label for="cycle">Cycle</label>
+            <input class="form-control" [(ngModel)]="data.cycle" name="cycle" id="cycle">
+        </div>
+        <div class="form-group">
+            <label for="niveau">Niveau</label>
+            <input class="form-control" [(ngModel)]="data.niveau" name="niveau" id="niveau">
+        </div>
+        <div class="form-group">
+            <label for="numClasse">Numéro de classe</label>
+            <input class="form-control" [(ngModel)]="data.numClasse" name="numClasse" id="numClasse">
+        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="etat">État</label>-->
+<!--            <input class="form-control" [(ngModel)]="data.etat" name="etat" id="etat">-->
+<!--        </div>-->
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+</mat-dialog-actions>
