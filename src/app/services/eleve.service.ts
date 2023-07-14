@@ -19,7 +19,7 @@ export class EleveService {
   getAllEleveEtatActif() {
     const headers = new HttpHeaders()
         .set('Content-Type', 'application/json');
-    return this.http.get(environment.url + '/eleves/actifs', { headers });
+    return this.http.get(environment.url + '/eleves/activer', { headers });
   }
 
   addEleve(el: {

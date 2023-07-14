@@ -45,7 +45,8 @@ import { TokenInterceptor } from './tokeninterceptor';
     UserComponent,
     LoginComponent,
     HomeComponent,
-    TemplateComponent
+    TemplateComponent,
+
   ],
   providers: [ {
     provide: HTTP_INTERCEPTORS,
