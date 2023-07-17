@@ -22,6 +22,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {NgxMaskDirective} from 'ngx-mask';
 import {ClasseComponent, DialogClasse, EditDialogClasse} from '../../pages/classe/classe.component';
 import {DialogStation, EditDialogStation, StationComponent} from '../../pages/station/station.component';
+import {DialogPersonnel, EditDialogPersonnel, PersonnelComponent} from '../../pages/personnel/personnel.component';
 
 @NgModule({
     imports: [
@@ -49,8 +50,8 @@ import {DialogStation, EditDialogStation, StationComponent} from '../../pages/st
     UpgradeComponent,
     EleveComponent, DialogEleve, EditDialogEleve,
     ClasseComponent, DialogClasse, EditDialogClasse,
-    StationComponent, DialogStation, EditDialogStation
-
+    StationComponent, DialogStation, EditDialogStation,
+    PersonnelComponent, DialogPersonnel, EditDialogPersonnel,
   ]
 })
 

@@ -11,6 +11,7 @@ import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import {EleveComponent} from '../../pages/eleve/eleve.component';
 import {ClasseComponent} from '../../pages/classe/classe.component';
 import {StationComponent} from '../../pages/station/station.component';
+import {PersonnelComponent} from '../../pages/personnel/personnel.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -55,13 +56,13 @@ export const AdminLayoutRoutes: Routes = [
     //         component: UpgradeComponent
     //     }]
     // }
+
     { path: 'dashboard',      component: DashboardComponent },
     // { path: 'user-profile',   component: UserProfileComponent },
     { path: 'eleves',        component: EleveComponent },
+    { path: 'personnels',  component: PersonnelComponent },
     { path: 'classes',        component: ClasseComponent },
     { path: 'stations',        component: StationComponent },
-
-
     // { path: 'table-list',     component: TableListComponent },
     // { path: 'typography',     component: TypographyComponent },
     // { path: 'icons',          component: IconsComponent },
