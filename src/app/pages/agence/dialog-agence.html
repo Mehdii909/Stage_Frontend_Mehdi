@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Ajouter une agence</h2>
+
+<mat-dialog-content class="mat-typography">
+    <form>
+        <div class="form-group">
+            <label for="nom">Nom</label>
+            <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom">
+        </div>
+        <div class="form-group">
+            <label for="adresseSiege">Adresse du siège</label>
+            <input class="form-control" [(ngModel)]="data.adresseSiege" name="adresseSiege" id="adresseSiege">
+        </div>
+        <div class="form-group">
+            <label for="responsable">Responsable</label>
+            <input class="form-control" [(ngModel)]="data.responsable" name="responsable" id="responsable">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input class="form-control" [(ngModel)]="data.email" name="email" id="email">
+        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="etat">État</label>-->
+<!--            <input class="form-control" [(ngModel)]="data.etat" name="etat" id="etat">-->
+<!--        </div>-->
+        <div class="form-group">
+            <label for="infoSupp">Informations supplémentaires</label>
+            <textarea class="form-control" [(ngModel)]="data.infoSupp" name="infoSupp" id="infoSupp"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="numTels">Numéros de téléphone</label>
+            <div class="input-group mb-2">
+                <input class="form-control" [(ngModel)]="newNumTel" name="newNumTel" id="newNumTel">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary btn-sm" type="button" (click)="addNumTel()">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="numTels">Liste des numéros de téléphone</label>
+                <div *ngFor="let numTel of data.numTels; let i = index" class="row align-items-center mb-2 border-bottom">
+                    <div class="col">{{ numTel }}</div>
+                    <div class="col-auto">
+                        <button class="btn btn-outline-danger btn-sm" type="button" (click)="removeNumTel(i)">
+                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="btn btn-success" (click)="submit()">Valider</button>
+</mat-dialog-actions>

@@ -11,11 +11,12 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { UserComponent } from './user/user.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
-import { TemplateComponent } from './template/template.component'; 
+import { TemplateComponent } from './template/template.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { TokenInterceptor } from './tokeninterceptor';
 import { StationComponent } from './pages/station/station.component';
 import { PersonnelComponent } from './pages/personnel/personnel.component';
+import { AgenceComponent } from './pages/agence/agence.component';
 
 @NgModule({
   imports: [

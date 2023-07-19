@@ -2,7 +2,9 @@ import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { Station } from '../../models/stationModel';
 import { StationService } from '../../services/station.service';
-import {Classe} from '../../models/classeModel';
+
+import * as L from 'leaflet';
+
 
 @Component({
   selector: 'app-station',
@@ -99,7 +101,6 @@ export class StationComponent implements OnInit {
   }
 }
 
-declare const google: any;
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -123,29 +124,6 @@ export class DialogStation implements OnInit {
   ngOnInit() {
     this.initMap();
   }
-  initMap() {
-    const mapOptions = {
-      center: { lat: 0, lng: 0 },
-      zoom: 8,
-    };
-
-    this.map = new google.maps.Map(this.mapContainer.nativeElement, mapOptions);
-
-    this.marker = new google.maps.Marker({
-      position: mapOptions.center,
-      map: this.map,
-    });
-
-    this.map.addListener('click', (event: any) => {
-      this.marker.setPosition(event.latLng);
-      this.updateCoordinates(event.latLng.lat(), event.latLng.lng());
-    });
-  }
-
-  updateCoordinates(latitude: number, longitude: number) {
-    this.data.coordonneesGpsLatitude = latitude.toString();
-    this.data.coordonneesGpsLongitude = longitude.toString();
-  }
 
   submit() {
     const st: { coordonneesGpsLongitude: string; region: string; nom: string; coordonneesGpsLatitude: string; etat: string } = {
@@ -162,6 +140,30 @@ export class DialogStation implements OnInit {
     });
   }
 
+
+  initMap() {
+    this.map = L.map(this.mapContainer.nativeElement).setView([0, 0], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
+
+    this.map.on('click', (event: L.LeafletMouseEvent) => {
+      const { lat, lng } = event.latlng;
+      this.updateCoordinates(lat, lng);
+      this.updateMarker(lat, lng);
+    });
+
+    this.marker = L.marker([0, 0]).addTo(this.map);
+  }
+
+  updateCoordinates(latitude: number, longitude: number) {
+    this.data.coordonneesGpsLatitude = latitude.toString();
+    this.data.coordonneesGpsLongitude = longitude.toString();
+  }
+
+  updateMarker(latitude: number, longitude: number) {
+    this.marker.setLatLng([latitude, longitude]);
+  }
 }
 
 @Component({

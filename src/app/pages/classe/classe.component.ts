@@ -43,6 +43,7 @@ export class ClasseComponent implements OnInit {
   refresh() {
     this.getAllClassesActive();
   }
+
   private getAllClassesActive() {
     this.classeService.getAllClasseEtatActif().subscribe(
         (res: any) => {

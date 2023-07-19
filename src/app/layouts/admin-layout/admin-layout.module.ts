@@ -23,6 +23,7 @@ import {NgxMaskDirective} from 'ngx-mask';
 import {ClasseComponent, DialogClasse, EditDialogClasse} from '../../pages/classe/classe.component';
 import {DialogStation, EditDialogStation, StationComponent} from '../../pages/station/station.component';
 import {DialogPersonnel, EditDialogPersonnel, PersonnelComponent} from '../../pages/personnel/personnel.component';
+import {AgenceComponent, DialogAgence, EditDialogAgence} from '../../pages/agence/agence.component';
 
 @NgModule({
     imports: [
@@ -52,6 +53,8 @@ import {DialogPersonnel, EditDialogPersonnel, PersonnelComponent} from '../../pa
     ClasseComponent, DialogClasse, EditDialogClasse,
     StationComponent, DialogStation, EditDialogStation,
     PersonnelComponent, DialogPersonnel, EditDialogPersonnel,
+    AgenceComponent, DialogAgence, EditDialogAgence
+
   ]
 })
 
