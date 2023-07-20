@@ -3,7 +3,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {EleveService} from '../../services/eleve.service';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {EleveModel, User} from '../../models/eleveModel';
+import {Eleve, User} from '../../models/eleve';
 
 @Component({
   selector: 'app-eleve',
@@ -136,7 +136,7 @@ export class DialogEleve {
 
   constructor(
       public dialogRef: MatDialogRef<DialogEleve>,
-      @Inject(MAT_DIALOG_DATA) public data: EleveModel,
+      @Inject(MAT_DIALOG_DATA) public data: Eleve,
       private eleveService: EleveService) { }
   submit() {
     // Generate a random password
@@ -194,7 +194,7 @@ export class EditDialogEleve {
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogEleve>,
-      @Inject(MAT_DIALOG_DATA) public data: EleveModel,
+      @Inject(MAT_DIALOG_DATA) public data: Eleve,
       private eleveService: EleveService) {
   }
 

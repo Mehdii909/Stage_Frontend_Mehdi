@@ -17,6 +17,8 @@ import { TokenInterceptor } from './tokeninterceptor';
 import { StationComponent } from './pages/station/station.component';
 import { PersonnelComponent } from './pages/personnel/personnel.component';
 import { AgenceComponent } from './pages/agence/agence.component';
+import { BusComponent } from './pages/bus/bus.component';
+import { ChauffeurComponent } from './pages/chauffeur/chauffeur.component';
 
 @NgModule({
   imports: [

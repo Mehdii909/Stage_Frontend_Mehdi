@@ -24,6 +24,8 @@ import {ClasseComponent, DialogClasse, EditDialogClasse} from '../../pages/class
 import {DialogStation, EditDialogStation, StationComponent} from '../../pages/station/station.component';
 import {DialogPersonnel, EditDialogPersonnel, PersonnelComponent} from '../../pages/personnel/personnel.component';
 import {AgenceComponent, DialogAgence, EditDialogAgence} from '../../pages/agence/agence.component';
+import {BusComponent, DialogBus, EditDialogBus} from '../../pages/bus/bus.component';
+import {ChauffeurComponent, DialogChauffeur, EditDialogChauffeur} from '../../pages/chauffeur/chauffeur.component';
 
 @NgModule({
     imports: [
@@ -53,7 +55,9 @@ import {AgenceComponent, DialogAgence, EditDialogAgence} from '../../pages/agenc
     ClasseComponent, DialogClasse, EditDialogClasse,
     StationComponent, DialogStation, EditDialogStation,
     PersonnelComponent, DialogPersonnel, EditDialogPersonnel,
-    AgenceComponent, DialogAgence, EditDialogAgence
+    AgenceComponent, DialogAgence, EditDialogAgence,
+    BusComponent, DialogBus, EditDialogBus,
+    ChauffeurComponent, DialogChauffeur, EditDialogChauffeur
 
   ]
 })

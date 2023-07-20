@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {Classe} from '../../models/classeModel';
+import {Classe} from '../../models/classe';
 import {ClasseService} from '../../services/classe.service';
 import {EditDialogEleve} from '../eleve/eleve.component';
 

@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { PersonnelService } from 'app/services/personnel.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { PersonnelModel, User} from 'app/models/personnelModel';
+import { Personnel, User} from 'app/models/personnel';
 
 @Component({
   selector: 'app-personnel',
@@ -122,7 +122,7 @@ export class DialogPersonnel {
 
   constructor(
       public dialogRef: MatDialogRef<DialogPersonnel>,
-      @Inject(MAT_DIALOG_DATA) public data: PersonnelModel,
+      @Inject(MAT_DIALOG_DATA) public data: Personnel,
       private personnelService: PersonnelService) { }
 
   submit() {
@@ -176,7 +176,7 @@ export class EditDialogPersonnel {
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogPersonnel>,
-      @Inject(MAT_DIALOG_DATA) public data: PersonnelModel,
+      @Inject(MAT_DIALOG_DATA) public data: Personnel,
       private personnelService: PersonnelService) { }
 
   submitEdit() {

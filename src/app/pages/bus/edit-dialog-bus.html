@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Modifier le bus</h2>
+
+<mat-dialog-content class="mat-typography">
+    <form>
+        <div class="form-group">
+            <label for="immatriculation">Immatriculation</label>
+            <input class="form-control" [(ngModel)]="data.immatriculation" name="immatriculation" id="immatriculation">
+        </div>
+        <div class="form-group">
+            <label for="marqueModele">Marque/Modèle</label>
+            <input class="form-control" [(ngModel)]="data.marqueModele" name="marqueModele" id="marqueModele">
+        </div>
+        <div class="form-group">
+            <label for="nombrePlaces">Nombre de places</label>
+            <input class="form-control" [(ngModel)]="data.nombrePlaces" name="nombrePlaces" id="nombrePlaces">
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+</mat-dialog-actions>

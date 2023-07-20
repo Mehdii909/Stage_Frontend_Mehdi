@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Agence } from '../models/agenceModel';
+import { Agence } from '../models/agence';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class AgenceService {
 
   getAllAgenceEtatActif() {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.get(environment.url + '/agences/actives', { headers });
+    return this.http.get(environment.url + '/agences/activer', { headers });
   }
 
   archiverAgence(id: number) {

@@ -1,34 +1,35 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Agence } from '../../models/agence';
-import { AgenceService } from '../../services/agence.service';
+import { Chauffeur } from '../../models/chauffeur';
+import { ChauffeurService } from '../../services/chauffeur.service';
+import {Agence} from '../../models/agence';
 
 @Component({
-  selector: 'app-agence',
-  templateUrl: './agence.component.html',
-  styleUrls: ['./agence.component.css']
+  selector: 'app-chauffeur',
+  templateUrl: './chauffeur.component.html',
+  styleUrls: ['./chauffeur.component.css']
 })
-export class AgenceComponent implements OnInit {
-  filteredData: Agence[] = [];
-  private dataSource: Agence[];
+export class ChauffeurComponent implements OnInit {
+  filteredData: Chauffeur[] = [];
+  private dataSource: Chauffeur[];
   searchText = '';
 
   constructor(
-      private agenceService: AgenceService,
+      private chauffeurService: ChauffeurService,
       public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.getAllAgences();
+    this.getAllChauffeurs();
   }
 
   refresh() {
-    this.getAllAgences();
+    this.getAllChauffeurs();
   }
 
-  getAllAgences(): void {
-    this.agenceService.getAllAgenceEtatActif().subscribe(
-        (res: Agence[]) => {
+  getAllChauffeurs(): void {
+    this.chauffeurService.getAllChauffeurEtatActif().subscribe(
+        (res: Chauffeur[]) => {
           console.log(res);
           this.dataSource = res;
           this.filteredData = res;
@@ -50,54 +51,51 @@ export class AgenceComponent implements OnInit {
     }
 
     // Perform the search based on the searchText
-    this.filteredData = this.dataSource.filter(agence => {
+    this.filteredData = this.dataSource.filter(chauffeur => {
       // Customize the search criteria as per your requirements
-      const fullSearch = `${agence.nom} ${agence.adresseSiege} ${agence.responsable}`.toLowerCase();
+      const fullSearch = `${chauffeur.nom} ${chauffeur.prenom} ${chauffeur.email}`.toLowerCase();
       return fullSearch.includes(this.searchText.toLowerCase());
     });
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(DialogAgence, {
+    const dialogRef = this.dialog.open(DialogChauffeur, {
       width: '500px',
       data: {
         nom: '',
-        adresseSiege: '',
-        responsable: '',
+        prenom: '',
         email: '',
         numTels: [],
         etat: '',
-        infoSupp: ''
+        agence: null // You can pass an agence object here if needed
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      this.getAllAgences();
+      this.getAllChauffeurs();
     });
   }
 
   openEditDialog(
       id: number,
       nom: string,
-      adresseSiege: string,
-      responsable: string,
+      prenom: string,
       email: string,
       numTels: string[],
       etat: string,
-      infoSupp: string
+      agence: Agence
   ): void {
-    const dialogRef = this.dialog.open(EditDialogAgence, {
+    const dialogRef = this.dialog.open(EditDialogChauffeur, {
       width: '500px',
       data: {
         id: id,
         nom: nom,
-        adresseSiege: adresseSiege,
-        responsable: responsable,
+        prenom: prenom,
         email: email,
         numTels: numTels,
         etat: etat,
-        infoSupp: infoSupp
+        agence: agence // You can pass an agence object here if needed
       }
     });
 
@@ -106,44 +104,44 @@ export class AgenceComponent implements OnInit {
     });
   }
 
-  archiverAgence(id) {
-    this.agenceService.archiverAgence(id).subscribe((res: any) => {
+  // Add any other methods needed for managing chauffeurs
+
+  archiverChauffeur(id: number) {
+    this.chauffeurService.archiverChauffeur(id).subscribe((res: any) => {
       // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
       this.refresh();
     });
   }
-
 }
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'dialog-agence',
-  templateUrl: 'dialog-agence.html',
+  selector: 'dialog-chauffeur',
+  templateUrl: 'dialog-chauffeur.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class DialogAgence {
+export class DialogChauffeur {
+  // Add the necessary properties for chauffeur creation dialog
   newNumTel: any;
 
   constructor(
-      public dialogRef: MatDialogRef<DialogAgence>,
-      @Inject(MAT_DIALOG_DATA) public data: Agence,
-      private agenceService: AgenceService
+      public dialogRef: MatDialogRef<DialogChauffeur>,
+      @Inject(MAT_DIALOG_DATA) public data: Chauffeur,
+      private chauffeurService: ChauffeurService
   ) {}
 
   submit() {
-    this.data.etat = 'activer';
-    // @ts-ignore
-    const agence: Agence = {
+    // Customize the submission logic for adding a chauffeur
+    const chauffeur: { agence: Agence; numTels: string[]; nom: string; prenom: string; etat: string; email: string } = {
       nom: this.data.nom,
-      adresseSiege: this.data.adresseSiege,
-      responsable: this.data.responsable,
+      prenom: this.data.prenom,
       email: this.data.email,
       numTels: this.data.numTels,
-      etat: this.data.etat,
-      infoSupp: this.data.infoSupp
+      etat: 'activer', // Assuming the default state is active when adding a new chauffeur
+      agence: this.data.agence // Add agence object here if needed
     };
 
-    this.agenceService.addAgence(agence).subscribe((res: any) => {
+    this.chauffeurService.addChauffeur(chauffeur).subscribe((res: any) => {
       this.dialogRef.close();
     });
   }
@@ -162,33 +160,34 @@ export class DialogAgence {
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'edit-dialog-agence',
-  templateUrl: 'edit-dialog-agence.html',
+  selector: 'edit-dialog-chauffeur',
+  templateUrl: 'edit-dialog-chauffeur.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogAgence {
+export class EditDialogChauffeur {
+  // Add the necessary properties for chauffeur edit dialog
   newNumTel: any;
 
   constructor(
-      public dialogRef: MatDialogRef<EditDialogAgence>,
-      @Inject(MAT_DIALOG_DATA) public data: Agence,
-      private agenceService: AgenceService
+      public dialogRef: MatDialogRef<EditDialogChauffeur>,
+      @Inject(MAT_DIALOG_DATA) public data: Chauffeur,
+      private chauffeurService: ChauffeurService
   ) {}
 
   submitEdit() {
+    // Customize the submission logic for editing a chauffeur
     const id = this.data.id;
-    const agence: Agence = {
+    const chauffeur: Chauffeur = {
       id: this.data.id,
       nom: this.data.nom,
-      adresseSiege: this.data.adresseSiege,
-      responsable: this.data.responsable,
+      prenom: this.data.prenom,
       email: this.data.email,
       numTels: this.data.numTels,
       etat: this.data.etat,
-      infoSupp: this.data.infoSupp
+      agence: this.data.agence // Add agence object here if needed
     };
 
-    this.agenceService.updateAgence(id, agence).subscribe((res: any) => {
+    this.chauffeurService.updateChauffeur(id, chauffeur).subscribe((res: any) => {
       this.dialogRef.close();
     });
   }
@@ -203,4 +202,5 @@ export class EditDialogAgence {
       this.newNumTel = ''; // Reset the input field
     }
   }
+
 }

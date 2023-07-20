@@ -13,6 +13,9 @@ import {ClasseComponent} from '../../pages/classe/classe.component';
 import {StationComponent} from '../../pages/station/station.component';
 import {PersonnelComponent} from '../../pages/personnel/personnel.component';
 import {AgenceComponent} from '../../pages/agence/agence.component';
+import {Bus} from '../../models/bus';
+import {BusComponent} from '../../pages/bus/bus.component';
+import {ChauffeurComponent} from '../../pages/chauffeur/chauffeur.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -65,6 +68,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'classes',        component: ClasseComponent },
     { path: 'stations',        component: StationComponent },
     { path: 'agences',        component: AgenceComponent },
+    { path: 'bus',        component: BusComponent },
+    { path: 'chauffeurs',        component: ChauffeurComponent },
+
 
     // { path: 'table-list',     component: TableListComponent },
     // { path: 'typography',     component: TypographyComponent },

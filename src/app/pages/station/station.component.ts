@@ -1,6 +1,6 @@
 import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import { Station } from '../../models/stationModel';
+import { Station } from '../../models/Station';
 import { StationService } from '../../services/station.service';
 
 import * as L from 'leaflet';
