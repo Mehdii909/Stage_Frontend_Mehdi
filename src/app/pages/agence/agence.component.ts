@@ -158,6 +158,12 @@ export class DialogAgence {
       this.newNumTel = ''; // Reset the input field
     }
   }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
+
 }
 
 @Component({
@@ -203,4 +209,10 @@ export class EditDialogAgence {
       this.newNumTel = ''; // Reset the input field
     }
   }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
+
 }

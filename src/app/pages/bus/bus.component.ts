@@ -141,6 +141,11 @@ export class DialogBus {
       this.dialogRef.close();
     });
   }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
 }
 
 @Component({
@@ -175,4 +180,10 @@ export class EditDialogBus {
       this.dialogRef.close();
     });
   }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
+
 }

@@ -131,6 +131,11 @@ export class DialogClasse {
       this.dialogRef.close();
     });
   }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
 }
 
 
@@ -161,6 +166,11 @@ export class EditDialogClasse {
       // Handle success or show notification
       this.dialogRef.close();
     });
+  }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
   }
 
 }

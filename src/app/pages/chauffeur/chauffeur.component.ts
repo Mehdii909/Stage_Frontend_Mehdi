@@ -146,6 +146,11 @@ export class DialogChauffeur {
     });
   }
 
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
+
   removeNumTel(index: number) {
     this.data.numTels.splice(index, 1);
   }
@@ -190,6 +195,11 @@ export class EditDialogChauffeur {
     this.chauffeurService.updateChauffeur(id, chauffeur).subscribe((res: any) => {
       this.dialogRef.close();
     });
+  }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
   }
 
   removeNumTel(index: number) {

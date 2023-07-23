@@ -152,6 +152,11 @@ export class DialogPersonnel {
     });
   }
 
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
+
   removeNum(index: number) {
     this.data.num.splice(index, 1);
   }
@@ -194,6 +199,11 @@ export class EditDialogPersonnel {
     this.personnelService.updatePersonnel(this.data.id, personnel).subscribe((res: any) => {
       this.dialogRef.close();
     });
+  }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
   }
 
   removeNum(index: number) {

@@ -140,6 +140,10 @@ export class DialogStation implements OnInit {
     });
   }
 
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
 
   initMap() {
     this.map = L.map(this.mapContainer.nativeElement).setView([0, 0], 13);
@@ -195,5 +199,10 @@ export class EditDialogStation {
       // Handle success or show notification
       this.dialogRef.close();
     });
+  }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
   }
 }

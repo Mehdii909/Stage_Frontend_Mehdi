@@ -170,6 +170,11 @@ export class DialogEleve {
       this.dialogRef.close();
     });
   }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
   removeNumTel(index: number) {
     this.data.numTels.splice(index, 1);
   }
@@ -218,6 +223,11 @@ export class EditDialogEleve {
       // this.showNotification('top', 'right', 'Le camion a été modifier', 'success');
       this.dialogRef.close();
     });
+  }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
   }
 
   removeNumTel(index: number) {
