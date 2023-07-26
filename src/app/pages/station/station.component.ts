@@ -113,7 +113,6 @@ export class DialogStation implements OnInit {
 
   @ViewChild('mapContainer', { static: true }) mapContainer: ElementRef;
   map: any;
-  marker: any;
 
   constructor(
       public dialogRef: MatDialogRef<DialogStation>,
@@ -122,7 +121,6 @@ export class DialogStation implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initMap();
   }
 
   submit() {
@@ -143,30 +141,6 @@ export class DialogStation implements OnInit {
   onCancel(): void {
     // Close the dialog without any action
     this.dialogRef.close();
-  }
-
-  initMap() {
-    this.map = L.map(this.mapContainer.nativeElement).setView([0, 0], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-
-    this.map.on('click', (event: L.LeafletMouseEvent) => {
-      const { lat, lng } = event.latlng;
-      this.updateCoordinates(lat, lng);
-      this.updateMarker(lat, lng);
-    });
-
-    this.marker = L.marker([0, 0]).addTo(this.map);
-  }
-
-  updateCoordinates(latitude: number, longitude: number) {
-    this.data.coordonneesGpsLatitude = latitude.toString();
-    this.data.coordonneesGpsLongitude = longitude.toString();
-  }
-
-  updateMarker(latitude: number, longitude: number) {
-    this.marker.setLatLng([latitude, longitude]);
   }
 }
 

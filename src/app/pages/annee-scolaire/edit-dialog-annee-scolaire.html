@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Modifier l'année scolaire</h2>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="anneeScolaireForm">
+        <div class="form-group">
+            <label for="ans">Année Scolaire</label>
+            <input class="form-control" formControlName="ans" name="ans" id="ans" required>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
+    <button class="btn btn-success" (click)="submitEdit()" [disabled]="anneeScolaireForm.invalid">Enregistrer</button>
+</mat-dialog-actions>

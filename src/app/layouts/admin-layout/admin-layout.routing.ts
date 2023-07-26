@@ -16,6 +16,7 @@ import {AgenceComponent} from '../../pages/agence/agence.component';
 import {Bus} from '../../models/bus';
 import {BusComponent} from '../../pages/bus/bus.component';
 import {ChauffeurComponent} from '../../pages/chauffeur/chauffeur.component';
+import {AnneeScolaireComponent} from '../../pages/annee-scolaire/annee-scolaire.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -70,6 +71,8 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'agences',        component: AgenceComponent },
     { path: 'bus',        component: BusComponent },
     { path: 'chauffeurs',        component: ChauffeurComponent },
+    { path: 'annee-scolaire',        component: AnneeScolaireComponent },
+
 
 
     // { path: 'table-list',     component: TableListComponent },

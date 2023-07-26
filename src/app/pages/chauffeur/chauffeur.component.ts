@@ -67,7 +67,6 @@ export class ChauffeurComponent implements OnInit {
         email: '',
         numTels: [],
         etat: '',
-        agence: null // You can pass an agence object here if needed
       }
     });
 
@@ -84,7 +83,6 @@ export class ChauffeurComponent implements OnInit {
       email: string,
       numTels: string[],
       etat: string,
-      agence: Agence
   ): void {
     const dialogRef = this.dialog.open(EditDialogChauffeur, {
       width: '500px',
@@ -95,7 +93,6 @@ export class ChauffeurComponent implements OnInit {
         email: email,
         numTels: numTels,
         etat: etat,
-        agence: agence // You can pass an agence object here if needed
       }
     });
 
@@ -132,13 +129,12 @@ export class DialogChauffeur {
 
   submit() {
     // Customize the submission logic for adding a chauffeur
-    const chauffeur: { agence: Agence; numTels: string[]; nom: string; prenom: string; etat: string; email: string } = {
+    const chauffeur: { numTels: string[]; nom: string; prenom: string; etat: string; email: string } = {
       nom: this.data.nom,
       prenom: this.data.prenom,
       email: this.data.email,
       numTels: this.data.numTels,
       etat: 'activer', // Assuming the default state is active when adding a new chauffeur
-      agence: this.data.agence // Add agence object here if needed
     };
 
     this.chauffeurService.addChauffeur(chauffeur).subscribe((res: any) => {
@@ -189,7 +185,6 @@ export class EditDialogChauffeur {
       email: this.data.email,
       numTels: this.data.numTels,
       etat: this.data.etat,
-      agence: this.data.agence // Add agence object here if needed
     };
 
     this.chauffeurService.updateChauffeur(id, chauffeur).subscribe((res: any) => {

@@ -26,6 +26,12 @@ import {DialogPersonnel, EditDialogPersonnel, PersonnelComponent} from '../../pa
 import {AgenceComponent, DialogAgence, EditDialogAgence} from '../../pages/agence/agence.component';
 import {BusComponent, DialogBus, EditDialogBus} from '../../pages/bus/bus.component';
 import {ChauffeurComponent, DialogChauffeur, EditDialogChauffeur} from '../../pages/chauffeur/chauffeur.component';
+import {
+    AnneeScolaireComponent,
+    DialogAnneeScolaire,
+    EditDialogAnneeScolaire
+} from '../../pages/annee-scolaire/annee-scolaire.component';
+import {ConfirmDialogComponent} from '../../pages/confirmDialog/confirmDialog.component';
 
 @NgModule({
     imports: [
@@ -57,7 +63,9 @@ import {ChauffeurComponent, DialogChauffeur, EditDialogChauffeur} from '../../pa
     PersonnelComponent, DialogPersonnel, EditDialogPersonnel,
     AgenceComponent, DialogAgence, EditDialogAgence,
     BusComponent, DialogBus, EditDialogBus,
-    ChauffeurComponent, DialogChauffeur, EditDialogChauffeur
+    ChauffeurComponent, DialogChauffeur, EditDialogChauffeur,
+    AnneeScolaireComponent, DialogAnneeScolaire, EditDialogAnneeScolaire,
+      ConfirmDialogComponent
 
   ]
 })

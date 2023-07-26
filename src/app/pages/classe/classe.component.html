@@ -29,7 +29,7 @@
                                         <th scope="col">Cycle</th>
                                         <th scope="col">Niveau</th>
                                         <th scope="col">Numéro de classe</th>
-<!--                                        <th scope="col">État</th>-->
+                                        <th scope="col">Ans</th>
                                         <th scope="col"></th>
                                     </tr>
                                     </thead>
@@ -38,9 +38,9 @@
                                         <td>{{ classe.cycle }}</td>
                                         <td>{{ classe.niveau }}</td>
                                         <td>{{ classe.numClasse }}</td>
-<!--                                        <td>{{ classe.etat }}</td>-->
+                                        <td>{{ classe.anneeScolaire.ans }}</td>
                                         <td class="text-right">
-                                            <a class="btn btn-success btn-sm" (click)="openEditDialog(classe.id, classe.cycle, classe.niveau, classe.numClasse, classe.etat)">
+                                            <a class="btn btn-success btn-sm" (click)="openEditDialog(classe.id, classe.cycle, classe.niveau, classe.numClasse, classe.etat, classe.anneeScolaire)">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <a class="btn btn-danger btn-sm" (click)="archiverClasse(classe.id)">

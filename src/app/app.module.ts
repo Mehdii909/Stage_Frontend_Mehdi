@@ -19,6 +19,7 @@ import { PersonnelComponent } from './pages/personnel/personnel.component';
 import { AgenceComponent } from './pages/agence/agence.component';
 import { BusComponent } from './pages/bus/bus.component';
 import { ChauffeurComponent } from './pages/chauffeur/chauffeur.component';
+import { AnneeScolaireComponent } from './pages/annee-scolaire/annee-scolaire.component';
 
 @NgModule({
   imports: [

@@ -8,16 +8,18 @@
     </div>
     <div class="form-group">
       <label for="niveau">Niveau</label>
-      <input class="form-control" [(ngModel)]="data.niveau" name="niveau" id="niveau">
+      <input class="form-control" [(ngModel)]="data.niveau" name="niveau" id="niveau" type="number">
     </div>
     <div class="form-group">
       <label for="numClasse">Numéro de classe</label>
       <input class="form-control" [(ngModel)]="data.numClasse" name="numClasse" id="numClasse">
     </div>
-<!--    <div class="form-group">-->
-<!--      <label for="etat">État</label>-->
-<!--      <input class="form-control" [(ngModel)]="data.etat" name="etat" id="etat">-->
-<!--    </div>-->
+    <div class="form-group">
+      <label for="agence">Ans</label>
+      <mat-select class="form-control" [(ngModel)]="data.anneeScolaire" name="ans" id="ans">
+        <mat-option *ngFor="let an of anneeScolaires" [value]="an">{{ an.ans }}</mat-option>
+      </mat-select>
+    </div>
   </form>
 </mat-dialog-content>
 

@@ -14,6 +14,13 @@
             <label for="nombrePlaces">Nombre de places</label>
             <input class="form-control" [(ngModel)]="data.nombrePlaces" name="nombrePlaces" id="nombrePlaces">
         </div>
+        <div>
+            <label for="agence">Agence</label>
+            <mat-select class="form-control" [(ngModel)]="data.agence" name="agence" id="agence">
+                <mat-option [value]="null">{{ data.agence.nom }}</mat-option>
+                <mat-option *ngFor="let ag of agences" [value]="ag">{{ ag.nom }}</mat-option>
+            </mat-select>
+        </div>
     </form>
 </mat-dialog-content>
 

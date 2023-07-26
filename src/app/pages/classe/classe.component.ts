@@ -3,6 +3,9 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog
 import {Classe} from '../../models/classe';
 import {ClasseService} from '../../services/classe.service';
 import {EditDialogEleve} from '../eleve/eleve.component';
+import {Agence} from '../../models/agence';
+import {AnneeScolaire} from '../../models/anneeScolaire';
+import {AnneeScolaireService} from '../../services/annee-scolaire.service';
 
 @Component({
   selector: 'app-classe',
@@ -64,15 +67,17 @@ export class ClasseComponent implements OnInit {
     });
   }
 
-  openEditDialog(id: number, cycle: string, niveau: string, numClasse: string, etat: string): void {
-    const dialogRef = this.dialog.open(EditDialogClasse, {
+    openEditDialog(id: number, cycle: string, niveau: string, numClasse: string, etat: string, anneeScolaire: AnneeScolaire): void {
+    // @ts-ignore
+      const dialogRef = this.dialog.open(EditDialogClasse, {
       width: '500px',
       data: {
         id: id,
         cycle: cycle,
         niveau: niveau,
         numClasse: numClasse,
-        etat: etat
+        etat: etat,
+        anneeScolaire: anneeScolaire
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -108,12 +113,28 @@ export class ClasseComponent implements OnInit {
 })
 
 // tslint:disable-next-line:component-class-suffix
-export class DialogClasse {
+export class DialogClasse implements OnInit {
+
+  anneeScolaires: AnneeScolaire[] = [];
 
   constructor(
       public dialogRef: MatDialogRef<DialogClasse>,
       @Inject(MAT_DIALOG_DATA) public data: Classe,
-      private classeService: ClasseService) { }
+      private classeService: ClasseService,
+      private anneeScolaireService: AnneeScolaireService) { }
+
+  ngOnInit(): void {
+    this.anneeScolaireService.getAllStationEtatActif().subscribe(
+        (an) => {
+          // @ts-ignore
+          this.anneeScolaires = an;
+        },
+        (error) => {
+          console.error(error);
+          // Handle error here
+        }
+    );
+  }
 
   submit() {
 
@@ -123,7 +144,8 @@ export class DialogClasse {
       cycle: this.data.cycle,
       niveau: this.data.niveau,
       numClasse: this.data.numClasse,
-      etat: this.data.etat
+      etat: this.data.etat,
+      anneeScolaire: this.data.anneeScolaire
     };
 
     this.classeService.addClasse(cl).subscribe((res: any) => {
@@ -146,21 +168,37 @@ export class DialogClasse {
 })
 
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogClasse {
+export class EditDialogClasse implements OnInit {
+
+  anneeScolaires: AnneeScolaire[] = [];
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogClasse>,
       @Inject(MAT_DIALOG_DATA) public data: Classe,
-      private classeService: ClasseService) { }
+      private classeService: ClasseService,
+      private anneeScolaireService: AnneeScolaireService) { }
 
+  ngOnInit(): void {
+    this.anneeScolaireService.getAllStationEtatActif().subscribe(
+        (an) => {
+          // @ts-ignore
+          this.anneeScolaires = an.filter(annee => annee.id !== this.data.anneeScolaire.id);
+        },
+        (error) => {
+          console.error(error);
+          // Handle error here
+        }
+    );
+  }
   submitEdit() {
     const id = this.data.id;
-    const classe = {
+    const classe: Classe = {
       id: this.data.id,
       cycle: this.data.cycle,
       niveau: this.data.niveau,
       numClasse: this.data.numClasse,
-      etat: this.data.etat
+      etat: this.data.etat,
+      anneeScolaire: this.data.anneeScolaire
     };
     this.classeService.updateClasse(id, classe).subscribe((res: any) => {
       // Handle success or show notification

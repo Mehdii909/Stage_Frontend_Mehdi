@@ -21,7 +21,7 @@ export class ChauffeurService {
     return this.http.get<Chauffeur>(environment.url + '/chauffeurs/' + id, { headers });
   }
 
-    addChauffeur(chauffeur: { agence: Agence; numTels: string[]; nom: string; prenom: string; etat: string; email: string }) {
+    addChauffeur(chauffeur: { numTels: string[]; nom: string; prenom: string; etat: string; email: string }) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<Chauffeur>(environment.url + '/chauffeurs', chauffeur, { headers });
   }

@@ -3,6 +3,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { Bus } from '../../models/bus';
 import { BusService } from '../../services/bus.service';
 import {Agence} from '../../models/agence';
+import {AgenceService} from '../../services/agence.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-bus',
@@ -95,7 +97,6 @@ export class BusComponent implements OnInit {
         agence: agence // You can pass an agence object here if needed
       }
     });
-
     dialogRef.afterClosed().subscribe(result => {
       this.refresh();
     });
@@ -117,14 +118,16 @@ export class BusComponent implements OnInit {
   templateUrl: 'dialog-bus.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class DialogBus {
+export class DialogBus implements OnInit {
   // Add the necessary properties for bus creation dialog
-  newNumTel: any;
+
+  agences: Agence[] = [];
 
   constructor(
       public dialogRef: MatDialogRef<DialogBus>,
       @Inject(MAT_DIALOG_DATA) public data: Bus,
-      private busService: BusService
+      private busService: BusService,
+      private agenceService: AgenceService
   ) {}
 
   submit() {
@@ -146,6 +149,20 @@ export class DialogBus {
     // Close the dialog without any action
     this.dialogRef.close();
   }
+
+  ngOnInit(): void {
+    this.agenceService.getAllAgenceEtatActif().subscribe(
+        (ag) => {
+          // @ts-ignore
+          this.agences = ag;
+        },
+        (error) => {
+          console.error(error);
+          // Handle error here
+        }
+    );
+  }
+
 }
 
 @Component({
@@ -154,15 +171,30 @@ export class DialogBus {
   templateUrl: 'edit-dialog-bus.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogBus {
+export class EditDialogBus implements OnInit {
   // Add the necessary properties for bus edit dialog
-  newNumTel: any;
+  agences: Agence[] = [];
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogBus>,
       @Inject(MAT_DIALOG_DATA) public data: Bus,
-      private busService: BusService
+      private busService: BusService,
+      private agenceService: AgenceService
+
   ) {}
+
+  ngOnInit(): void {
+    this.agenceService.getAllAgenceEtatActif().subscribe(
+        (ag) => {
+          // @ts-ignore
+          this.agences = ag.filter(agency => agency.id !== this.data.agence.id);
+        },
+        (error) => {
+          console.error(error);
+          // Handle error here
+        }
+    );
+  }
 
   submitEdit() {
     // Customize the submission logic for editing a bus
