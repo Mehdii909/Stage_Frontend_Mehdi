@@ -1,14 +1,15 @@
 <h2 mat-dialog-title>Modifier l'élève</h2>
 
+
 <mat-dialog-content class="mat-typography">
-  <form>
+  <form [formGroup]="eleveForm">
     <div class="form-group">
       <label for="nom">Nom</label>
-      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom">
+      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom" required>
     </div>
     <div class="form-group">
       <label for="prenom">Prénom</label>
-      <input class="form-control" [(ngModel)]="data.prenom" name="prenom" id="prenom">
+      <input class="form-control" [(ngModel)]="data.prenom" name="prenom" id="prenom" required>
     </div>
     <div class="form-group">
       <label for="nomPere">Nom du père</label>
@@ -34,6 +35,8 @@
       <label for="email">Email</label>
       <input class="form-control" [(ngModel)]="data.email" name="email" id="email">
     </div>
+  </form>
+  <form>
     <div class="form-group">
       <label for="numTels">Numéros de téléphone</label>
       <div class="input-group mb-2">
@@ -57,9 +60,10 @@
       </div>
     </div>
   </form>
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
-  <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+  <button class="btn btn-success" (click)="submitEdit()" [disabled]="eleveForm.invalid || !data.numTels.length">Enregistrer</button>
 </mat-dialog-actions>

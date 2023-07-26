@@ -4,6 +4,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {EleveService} from '../../services/eleve.service';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Eleve, User} from '../../models/eleve';
+import {ConfirmDialogComponent} from '../confirmDialog/confirmDialog.component';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-eleve',
@@ -67,9 +69,25 @@ export class EleveComponent implements OnInit {
   }
 
   archiverEleve(id) {
-    this.eleveService.archiverEleve(id).subscribe((res: any) => {
-      // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
-      this.refresh();
+    // Ouvre le dialogue de confirmation avant de supprimer le produit
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la suppression',
+        message: 'Êtes-vous sûr de vouloir supprimer cette eleve ?',
+        confirmText: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+    // S'abonne à l'événement après la fermeture du dialogue de confirmation
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
+        this.eleveService.archiverEleve(id).subscribe((res: any) => {
+          // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
+          this.refresh();
+        });
+      }
     });
   }
 
@@ -97,7 +115,20 @@ export class EleveComponent implements OnInit {
   }
 
   // tslint:disable-next-line:max-line-length
-  openEditDialog(id: number, nom: string, prenom: string, nomPere: string, prenomPere: string, nomMere: string, prenomMere: string, nationalite: string, email: string, etat: string, numTels: string[], user: User): void {
+  openEditDialog(
+      id: number,
+      nom: string,
+      prenom: string,
+      nomPere: string,
+      prenomPere: string,
+      nomMere: string,
+      prenomMere: string,
+      nationalite: string,
+      email: string,
+      etat: string,
+      numTels: string[],
+      user: User
+  ): void {
     const dialogRef = this.dialog.open(EditDialogEleve, {
       width: '500px',
       data: {
@@ -116,11 +147,15 @@ export class EleveComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.refresh();
+    dialogRef.afterClosed().subscribe((result: Eleve) => {
+      if (result) {
+        this.eleveService.updateEleve(result.id, result).subscribe((res: any) => {
+          dialogRef.close();
+          this.refresh();
+        });
+      }
     });
   }
-
 }
 
 @Component({
@@ -130,15 +165,36 @@ export class EleveComponent implements OnInit {
 })
 
 // tslint:disable-next-line:component-class-suffix
-export class DialogEleve {
+export class DialogEleve implements OnInit {
 
   newNumTel: any;
+  eleveForm: FormGroup;
 
   constructor(
       public dialogRef: MatDialogRef<DialogEleve>,
       @Inject(MAT_DIALOG_DATA) public data: Eleve,
+      private formBuilder: FormBuilder,
       private eleveService: EleveService) { }
+  ngOnInit(): void {
+
+    // Create the form group with custom validation for required fields
+    this.eleveForm = this.formBuilder.group({
+      nom: [this.data.nom, Validators.required],
+      prenom: [this.data.prenom, Validators.required],
+      nomPere: [this.data.nomPere],
+      prenomPere: [this.data.prenomPere],
+      nomMere: [this.data.nomMere],
+      prenomMere: [this.data.prenomMere],
+      nationalite: [this.data.nationalite],
+      email: [this.data.email]
+    });
+  }
+
   submit() {
+    if (this.eleveForm.invalid) {
+      // If the form is invalid (some required fields are empty), do not submit
+      return;
+    }
     // Generate a random password
     const randomPassword = Math.random().toString(36).slice(-8);
     // Assign values to user properties
@@ -175,6 +231,7 @@ export class DialogEleve {
     // Close the dialog without any action
     this.dialogRef.close();
   }
+
   removeNumTel(index: number) {
     this.data.numTels.splice(index, 1);
   }
@@ -193,37 +250,68 @@ export class DialogEleve {
 })
 
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogEleve {
+export class EditDialogEleve implements OnInit {
 
   newNumTel: any;
+  eleveForm: FormGroup;
 
   constructor(
-      public dialogRef: MatDialogRef<EditDialogEleve>,
+      public dialogRef: MatDialogRef<DialogEleve>,
       @Inject(MAT_DIALOG_DATA) public data: Eleve,
-      private eleveService: EleveService) {
+      private formBuilder: FormBuilder,
+      public dialog: MatDialog,
+      private eleveService: EleveService) { }
+  ngOnInit(): void {
+
+    // Create the form group with custom validation for required fields
+    this.eleveForm = this.formBuilder.group({
+      nom: [this.data.nom, Validators.required],
+      prenom: [this.data.prenom, Validators.required],
+      nomPere: [this.data.nomPere],
+      prenomPere: [this.data.prenomPere],
+      nomMere: [this.data.nomMere],
+      prenomMere: [this.data.prenomMere],
+      nationalite: [this.data.nationalite],
+      email: [this.data.email]
+    });
   }
 
   submitEdit() {
-    const id = this.data.id;
-    const el = {
-      id: this.data.id,
-      nom: this.data.nom,
-      prenom: this.data.prenom,
-      nomPere: this.data.nomPere,
-      prenomPere: this.data.prenomPere,
-      nomMere: this.data.nomMere,
-      prenomMere: this.data.prenomMere,
-      nationalite: this.data.nationalite,
-      email: this.data.email,
-      etat: this.data.etat,
-      numTels: this.data.numTels,
-      user: this.data.user
-    };
-    this.eleveService.updateEleve(id, el).subscribe((res: any) => {
-      // this.showNotification('top', 'right', 'Le camion a été modifier', 'success');
-      this.dialogRef.close();
+    // Ouvrir un dialogue de confirmation avant de soumettre les modifications
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la modification',
+        message: 'Êtes-vous sûr de vouloir modifier cet élève ?',
+        confirmText: 'Confirmer',
+        confirmColor: 'primary'
+      }
+    });
+
+    // S'abonner à l'événement après la fermeture du dialogue de confirmation
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // Si l'utilisateur confirme la modification, soumettre les modifications
+        const id = this.data.id;
+        const eleve: Eleve = {
+          id: this.data.id,
+          nom: this.data.nom,
+          prenom: this.data.prenom,
+          nomPere: this.data.nomPere,
+          prenomPere: this.data.prenomPere,
+          nomMere: this.data.nomMere,
+          prenomMere: this.data.prenomMere,
+          nationalite: this.data.nationalite,
+          email: this.data.email,
+          etat: this.data.etat,
+          numTels: this.data.numTels,
+          user: this.data.user,
+        };
+        this.dialogRef.close(eleve);
+      }
     });
   }
+
 
   onCancel(): void {
     // Close the dialog without any action

@@ -180,7 +180,7 @@ export class DialogAnneeScolaire implements OnInit {
   templateUrl: 'edit-dialog-annee-scolaire.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogAnneeScolaire implements OnInit{
+export class EditDialogAnneeScolaire implements OnInit {
   anneeScolaireForm: FormGroup;
 
   constructor(

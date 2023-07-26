@@ -1,14 +1,14 @@
 <h2 mat-dialog-title>Ajouter un élève</h2>
 
 <mat-dialog-content class="mat-typography">
-  <form>
+  <form [formGroup]="eleveForm">
     <div class="form-group">
       <label for="nom">Nom</label>
-      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom">
+      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom" required>
     </div>
     <div class="form-group">
       <label for="prenom">Prénom</label>
-      <input class="form-control" [(ngModel)]="data.prenom" name="prenom" id="prenom">
+      <input class="form-control" [(ngModel)]="data.prenom" name="prenom" id="prenom" required>
     </div>
     <div class="form-group">
       <label for="nomPere">Nom du père</label>
@@ -34,6 +34,8 @@
       <label for="email">Email</label>
       <input class="form-control" [(ngModel)]="data.email" name="email" id="email">
     </div>
+  </form>
+  <form>
     <div class="form-group">
       <label for="numTels">Numéros de téléphone</label>
       <div class="input-group mb-2">
@@ -56,42 +58,11 @@
         </div>
       </div>
     </div>
-
-    <!--      <table class="table table-sm custom-table-width">-->
-      <!--        <tbody>-->
-      <!--        <tr *ngFor="let numTel of data.numTels; let i = index">-->
-      <!--          <td>{{ numTel }}</td>-->
-      <!--          <td>-->
-      <!--            <button class="btn btn-outline-danger btn-sm" type="button" (click)="removeNumTel(i)">-->
-      <!--              <i class="fas fa-trash-alt" aria-hidden="true"></i>-->
-      <!--            </button>-->
-      <!--          </td>-->
-      <!--        </tr>-->
-      <!--        </tbody>-->
-      <!--      </table>-->
-
-      <!--      <ul class="list-group list-group-flush">-->
-      <!--        <li class="list-group-item" *ngFor="let numTel of data.numTels; let i = index">-->
-      <!--          {{ numTel }}-->
-      <!--          <button class="btn btn-outline-danger btn-sm float-right" type="button" (click)="removeNumTel(i)">-->
-      <!--            <i class="fas fa-trash-alt" aria-hidden="true"></i>-->
-      <!--          </button>-->
-      <!--        </li>-->
-      <!--      </ul>-->
-
-      <!--      <div *ngFor="let numTel of data.numTels; let i = index" class="input-group mb-2">-->
-      <!--        <input class="form-control" [value]="numTel" readonly>-->
-      <!--        <div class="input-group-append">-->
-      <!--          <button class="btn btn-outline-danger btn-sm" type="button" (click)="removeNumTel(i)">-->
-      <!--            <i class="fas fa-trash-alt" aria-hidden="true"></i>-->
-      <!--          </button>-->
-      <!--        </div>-->
-      <!--      </div>-->
   </form>
 
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
-  <button class="btn btn-success" (click)="submit()">Valider</button>
+  <button class="btn btn-success" (click)="submit()" [disabled]="eleveForm.invalid || !data.numTels.length">Valider</button>
 </mat-dialog-actions>
