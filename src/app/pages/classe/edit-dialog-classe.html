@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Modifier la classe</h2>
 
 <mat-dialog-content class="mat-typography">
-    <form>
+    <form [formGroup]="classeForm">
         <div class="form-group">
             <label for="cycle">Cycle</label>
             <input class="form-control" [(ngModel)]="data.cycle" name="cycle" id="cycle">
@@ -14,6 +14,8 @@
             <label for="numClasse">Numéro de classe</label>
             <input class="form-control" [(ngModel)]="data.numClasse" name="numClasse" id="numClasse">
         </div>
+    </form>
+    <form>
         <div class="form-group">
             <label for="ans">Ans</label>
             <mat-select class="form-control" [(ngModel)]="data.anneeScolaire" name="ans" id="ans">
@@ -26,5 +28,5 @@
 
 <mat-dialog-actions align="end">
     <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
-    <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+    <button class="btn btn-success" (click)="submitEdit()" [disabled]="classeForm.invalid || !data.anneeScolaire" >Enregistrer</button>
 </mat-dialog-actions>

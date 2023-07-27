@@ -71,7 +71,7 @@ export class EleveComponent implements OnInit {
   archiverEleve(id) {
     // Ouvre le dialogue de confirmation avant de supprimer le produit
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         title: 'Confirmer la suppression',
         message: 'Êtes-vous sûr de vouloir supprimer cette eleve ?',
@@ -175,8 +175,8 @@ export class DialogEleve implements OnInit {
       @Inject(MAT_DIALOG_DATA) public data: Eleve,
       private formBuilder: FormBuilder,
       private eleveService: EleveService) { }
-  ngOnInit(): void {
 
+  ngOnInit(): void {
     // Create the form group with custom validation for required fields
     this.eleveForm = this.formBuilder.group({
       nom: [this.data.nom, Validators.required],
@@ -279,7 +279,7 @@ export class EditDialogEleve implements OnInit {
   submitEdit() {
     // Ouvrir un dialogue de confirmation avant de soumettre les modifications
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         title: 'Confirmer la modification',
         message: 'Êtes-vous sûr de vouloir modifier cet élève ?',

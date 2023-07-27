@@ -6,6 +6,8 @@ import {EditDialogEleve} from '../eleve/eleve.component';
 import {Agence} from '../../models/agence';
 import {AnneeScolaire} from '../../models/anneeScolaire';
 import {AnneeScolaireService} from '../../services/annee-scolaire.service';
+import {ConfirmDialogComponent} from '../confirmDialog/confirmDialog.component';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-classe',
@@ -37,7 +39,7 @@ export class ClasseComponent implements OnInit {
   }
 
   constructor(private classeService: ClasseService,
-      public dialog: MatDialog) { }
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getAllClassesActive();
@@ -61,15 +63,34 @@ export class ClasseComponent implements OnInit {
   }
 
   archiverClasse(id) {
-    this.classeService.archiverClasse(id).subscribe((res: any) => {
-      // this.showNotification('top', 'right', 'La classe a été supprimer', 'danger');
-      this.refresh();
+    // Ouvre le dialogue de confirmation avant de supprimer le produit
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la suppression',
+        message: 'Êtes-vous sûr de vouloir supprimer cette classe ?',
+        confirmText: 'Supprimer',
+        confirmColor: 'warn'
+      }
     });
+
+    // S'abonne à l'événement après la fermeture du dialogue de confirmation
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      console.log(result)
+      if (result) {
+        // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
+        this.classeService.archiverClasse(id).subscribe((res: any) => {
+          // this.showNotification('top', 'right', 'La classe a été supprimer', 'danger');
+          this.refresh();
+        });
+      }
+    });
+
   }
 
-    openEditDialog(id: number, cycle: string, niveau: string, numClasse: string, etat: string, anneeScolaire: AnneeScolaire): void {
+  openEditDialog(id: number, cycle: string, niveau: string, numClasse: string, etat: string, anneeScolaire: AnneeScolaire): void {
     // @ts-ignore
-      const dialogRef = this.dialog.open(EditDialogClasse, {
+    const dialogRef = this.dialog.open(EditDialogClasse, {
       width: '500px',
       data: {
         id: id,
@@ -80,9 +101,21 @@ export class ClasseComponent implements OnInit {
         anneeScolaire: anneeScolaire
       }
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.refresh();
+
+    // S'abonne à l'événement après la fermeture du dialogue
+    dialogRef.afterClosed().subscribe((result: Classe) => {
+      // Vérifie si un résultat a été retourné depuis le dialogue
+      console.log(result)
+      if (result) {
+        // Appelle le service pour mettre à jour le produit
+        this.classeService.updateClasse(result.id, result).subscribe((res: any) => {
+          // Handle success or show notification
+          dialogRef.close();
+          this.refresh();
+        });
+      }
     });
+
   }
 
 
@@ -116,11 +149,14 @@ export class ClasseComponent implements OnInit {
 export class DialogClasse implements OnInit {
 
   anneeScolaires: AnneeScolaire[] = [];
+  classeForm: FormGroup;
+
 
   constructor(
       public dialogRef: MatDialogRef<DialogClasse>,
       @Inject(MAT_DIALOG_DATA) public data: Classe,
       private classeService: ClasseService,
+      private formBuilder: FormBuilder,
       private anneeScolaireService: AnneeScolaireService) { }
 
   ngOnInit(): void {
@@ -134,9 +170,21 @@ export class DialogClasse implements OnInit {
           // Handle error here
         }
     );
+
+    // Create the form group with custom validation for required fields
+    this.classeForm = this.formBuilder.group({
+      cycle: [this.data.cycle, Validators.required],
+      niveau: [this.data.niveau, Validators.required],
+      numClasse: [this.data.numClasse, Validators.required]
+    });
+
   }
 
   submit() {
+    if (this.classeForm.invalid) {
+      // If the form is invalid (some required fields are empty), do not submit
+      return;
+    }
 
     this.data.etat = 'activer';
 
@@ -160,7 +208,6 @@ export class DialogClasse implements OnInit {
   }
 }
 
-
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'edit-dialog-classe',
@@ -171,11 +218,14 @@ export class DialogClasse implements OnInit {
 export class EditDialogClasse implements OnInit {
 
   anneeScolaires: AnneeScolaire[] = [];
+  classeForm: FormGroup;
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogClasse>,
       @Inject(MAT_DIALOG_DATA) public data: Classe,
       private classeService: ClasseService,
+      private dialog: MatDialog,
+      private formBuilder: FormBuilder,
       private anneeScolaireService: AnneeScolaireService) { }
 
   ngOnInit(): void {
@@ -189,28 +239,48 @@ export class EditDialogClasse implements OnInit {
           // Handle error here
         }
     );
-  }
-  submitEdit() {
-    const id = this.data.id;
-    const classe: Classe = {
-      id: this.data.id,
-      cycle: this.data.cycle,
-      niveau: this.data.niveau,
-      numClasse: this.data.numClasse,
-      etat: this.data.etat,
-      anneeScolaire: this.data.anneeScolaire
-    };
-    this.classeService.updateClasse(id, classe).subscribe((res: any) => {
-      // Handle success or show notification
-      this.dialogRef.close();
+
+    // Create the form group with custom validation for required fields
+    this.classeForm = this.formBuilder.group({
+      cycle: [this.data.cycle, Validators.required],
+      niveau: [this.data.niveau, Validators.required],
+      numClasse: [this.data.numClasse, Validators.required]
     });
   }
+  submitEdit() {
+    // Ouvrir un dialogue de confirmation avant de soumettre les modifications
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la modification',
+        message: 'Êtes-vous sûr de vouloir modifier cette classe ?',
+        confirmText: 'Confirmer',
+        confirmColor: 'primary'
+      }
+    });
 
+    // S'abonner à l'événement après la fermeture du dialogue de confirmation
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // Si l'utilisateur confirme la modification, soumettre les modifications
+
+        const id = this.data.id;
+        const classe: Classe = {
+          id: this.data.id,
+          cycle: this.data.cycle,
+          niveau: this.data.niveau,
+          numClasse: this.data.numClasse,
+          etat: this.data.etat,
+          anneeScolaire: this.data.anneeScolaire
+        };
+        this.dialogRef.close(classe);
+      }
+    });
+  }
   onCancel(): void {
     // Close the dialog without any action
     this.dialogRef.close();
   }
 
 }
-
 
