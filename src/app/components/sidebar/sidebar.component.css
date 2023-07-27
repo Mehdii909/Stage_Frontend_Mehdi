@@ -27,11 +27,10 @@
     padding: 15px 0px 0px;}
 
 .nav-wrap{
-    overflow: auto;
 }
 
 .navig{
-    max-height: 60vh;}
+    max-height: 79vh;}
 
 .logout{
     position: fixed;
