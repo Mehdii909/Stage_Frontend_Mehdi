@@ -19,13 +19,13 @@
                             </div>
                             <div class="table-responsive">
                                 <table class="table">
-                                    <thead class="text-primary">
+                                    <thead class="text-primary textC">
                                     <tr>
                                         <th scope="col">Nom</th>
                                         <th scope="col">Prénom</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Fonction</th>
-<!--                                        <th scope="col">État</th>-->
+                                        <th scope="col">État</th>
                                         <th scope="col">Numéros de téléphone</th>
                                         <th scope="col"></th>
                                     </tr>
@@ -36,7 +36,7 @@
                                         <td>{{ item.prenom }}</td>
                                         <td>{{ item.email }}</td>
                                         <td>{{ item.fonction }}</td>
-<!--                                        <td>{{ item.etat }}</td>-->
+                                        <td>{{ item.etat }}</td>
                                         <td>
                                             <ng-container *ngFor="let num of item.num; let last = last">
                                                 {{ num }}

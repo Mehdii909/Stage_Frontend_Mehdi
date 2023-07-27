@@ -1,14 +1,14 @@
 <h2 mat-dialog-title>Modifier la station</h2>
 
 <mat-dialog-content class="mat-typography">
-  <form>
+  <form [formGroup]="stationForm">
     <div class="form-group">
       <label for="nom">Nom</label>
-      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom">
+      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom" required>
     </div>
     <div class="form-group">
       <label for="region">Région</label>
-      <input class="form-control" [(ngModel)]="data.region" name="region" id="region">
+      <input class="form-control" [(ngModel)]="data.region" name="region" id="region" required>
     </div>
     <div class="form-group">
       <label for="coordonneesGpsLatitude">Coordonnées GPS - Latitude</label>
@@ -18,11 +18,10 @@
       <label for="coordonneesGpsLongitude">Coordonnées GPS - Longitude</label>
       <input class="form-control" [(ngModel)]="data.coordonneesGpsLongitude" name="coordonneesGpsLongitude" id="coordonneesGpsLongitude">
     </div>
-
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
-  <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+  <button class="btn btn-success" (click)="submitEdit()" [disabled]="stationForm.invalid">Enregistrer</button>
 </mat-dialog-actions>

@@ -31,7 +31,7 @@
                                         <th scope="col">Responsable</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Numéros de téléphone</th>
-<!--                                        <th scope="col">État</th>-->
+                                        <!--                                        <th scope="col">État</th>-->
                                         <th scope="col"></th>
                                     </tr>
                                     </thead>
@@ -42,7 +42,7 @@
                                         <td>{{ agence.responsable }}</td>
                                         <td>{{ agence.email }}</td>
                                         <td>{{ agence.numTels.join(', ') }}</td>
-<!--                                        <td>{{ agence.etat }}</td>-->
+                                        <!--                                        <td>{{ agence.etat }}</td>-->
                                         <td class="text-right">
                                             <a class="btn btn-success btn-sm" (click)="openEditDialog(agence.id, agence.nom, agence.adresseSiege, agence.responsable, agence.email, agence.numTels, agence.etat, agence.infoSupp)">
                                                 <i class="fas fa-edit"></i>

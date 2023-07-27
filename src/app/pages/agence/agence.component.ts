@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Agence } from '../../models/agence';
 import { AgenceService } from '../../services/agence.service';
+import { ConfirmDialogComponent } from 'app/pages/confirmDialog/confirmDialog.component';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-agence',
@@ -9,14 +11,34 @@ import { AgenceService } from '../../services/agence.service';
   styleUrls: ['./agence.component.css']
 })
 export class AgenceComponent implements OnInit {
-  filteredData: Agence[] = [];
-  private dataSource: Agence[];
+  dataSource = []
+
+  filteredData: any[] = [];
+
   searchText = '';
 
   constructor(
       private agenceService: AgenceService,
       public dialog: MatDialog
   ) { }
+
+  onSearchChange(): void {
+    // Reset the filteredData array
+    this.filteredData = [];
+
+    // Check if the search text is empty
+    if (!this.searchText) {
+      this.filteredData = this.dataSource;
+      return;
+    }
+
+    // Perform the search based on the searchText
+    this.filteredData = this.dataSource.filter(agence => {
+      // Customize the search criteria as per your requirements
+      const fullSearch = `${agence.nom} ${agence.adresseSiege} ${agence.responsable}`.toLowerCase();
+      return fullSearch.includes(this.searchText.toLowerCase());
+    });
+  }
 
   ngOnInit(): void {
     this.getAllAgences();
@@ -39,21 +61,25 @@ export class AgenceComponent implements OnInit {
     );
   }
 
-  onSearchChange(): void {
-    // Reset the filteredData array
-    this.filteredData = [];
-
-    // Check if the search text is empty
-    if (!this.searchText) {
-      this.filteredData = this.dataSource;
-      return;
-    }
-
-    // Perform the search based on the searchText
-    this.filteredData = this.dataSource.filter(agence => {
-      // Customize the search criteria as per your requirements
-      const fullSearch = `${agence.nom} ${agence.adresseSiege} ${agence.responsable}`.toLowerCase();
-      return fullSearch.includes(this.searchText.toLowerCase());
+  archiverAgence(id) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la suppression',
+        message: 'Êtes-vous sûr de vouloir supprimer cette agence ?',
+        confirmText: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+    // S'abonne à l'événement après la fermeture du dialogue de confirmation
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
+        this.agenceService.archiverAgence(id).subscribe((res: any) => {
+          // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
+          this.refresh();
+        });
+      }
     });
   }
 
@@ -101,18 +127,15 @@ export class AgenceComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.refresh();
+    dialogRef.afterClosed().subscribe((result: Agence) => {
+      if (result) {
+        this.agenceService.updateAgence(result.id, result).subscribe((res: any) => {
+          dialogRef.close();
+          this.refresh();
+        });
+      }
     });
   }
-
-  archiverAgence(id) {
-    this.agenceService.archiverAgence(id).subscribe((res: any) => {
-      // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
-      this.refresh();
-    });
-  }
-
 }
 
 @Component({
@@ -121,16 +144,34 @@ export class AgenceComponent implements OnInit {
   templateUrl: 'dialog-agence.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class DialogAgence {
+export class DialogAgence implements OnInit {
   newNumTel: any;
+  agenceForm: FormGroup;
 
   constructor(
       public dialogRef: MatDialogRef<DialogAgence>,
       @Inject(MAT_DIALOG_DATA) public data: Agence,
+      private formBuilder: FormBuilder,
       private agenceService: AgenceService
   ) {}
 
+  ngOnInit(): void {
+
+    // Create the form group with custom validation for required fields
+    this.agenceForm = this.formBuilder.group({
+      nom: [this.data.nom, Validators.required],
+      adresseSiege: [this.data.adresseSiege, Validators.required],
+      responsable: [this.data.responsable, Validators.required],
+      email: [this.data.email],
+      infoSupp: [this.data.infoSupp]
+    });
+  }
+
   submit() {
+    if (this.agenceForm.invalid) {
+      return;
+    }
+
     this.data.etat = 'activer';
     // @ts-ignore
     const agence: Agence = {
@@ -148,6 +189,13 @@ export class DialogAgence {
     });
   }
 
+
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
+  }
+
   removeNumTel(index: number) {
     this.data.numTels.splice(index, 1);
   }
@@ -159,10 +207,7 @@ export class DialogAgence {
     }
   }
 
-  onCancel(): void {
-    // Close the dialog without any action
-    this.dialogRef.close();
-  }
+
 
 }
 
@@ -172,31 +217,64 @@ export class DialogAgence {
   templateUrl: 'edit-dialog-agence.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogAgence {
+export class EditDialogAgence implements OnInit {
   newNumTel: any;
+  agenceForm: FormGroup;
+
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogAgence>,
       @Inject(MAT_DIALOG_DATA) public data: Agence,
+      private formBuilder: FormBuilder,
+      public dialog: MatDialog,
       private agenceService: AgenceService
   ) {}
 
-  submitEdit() {
-    const id = this.data.id;
-    const agence: Agence = {
-      id: this.data.id,
-      nom: this.data.nom,
-      adresseSiege: this.data.adresseSiege,
-      responsable: this.data.responsable,
-      email: this.data.email,
-      numTels: this.data.numTels,
-      etat: this.data.etat,
-      infoSupp: this.data.infoSupp
-    };
-
-    this.agenceService.updateAgence(id, agence).subscribe((res: any) => {
-      this.dialogRef.close();
+  ngOnInit(): void {
+    this.agenceForm = this.formBuilder.group({
+      nom: [this.data.nom, Validators.required],
+      adresseSiege: [this.data.adresseSiege, Validators.required],
+      responsable: [this.data.responsable, Validators.required],
+      email: [this.data.email],
+      infoSupp: [this.data.infoSupp]
+      // Add more form controls for other properties if needed
     });
+  }
+
+
+  submitEdit() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la modification',
+        message: 'Êtes-vous sûr de vouloir modifier cette agence ?',
+        confirmText: 'Confirmer',
+        confirmColor: 'primary'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        const id = this.data.id;
+        const ag: Agence = {
+          id: this.data.id,
+          nom: this.data.nom,
+          adresseSiege: this.data.adresseSiege,
+          responsable: this.data.responsable,
+          email: this.data.email,
+          numTels: this.data.numTels,
+          etat: this.data.etat,
+          infoSupp: this.data.infoSupp
+        };
+
+        this.dialogRef.close(ag);
+      }
+    });
+  }
+
+  onCancel(): void {
+    // Close the dialog without any action
+    this.dialogRef.close();
   }
 
   removeNumTel(index: number) {
@@ -210,9 +288,5 @@ export class EditDialogAgence {
     }
   }
 
-  onCancel(): void {
-    // Close the dialog without any action
-    this.dialogRef.close();
-  }
 
 }

@@ -1,27 +1,25 @@
 <h2 mat-dialog-title>Modifier l'agence</h2>
 
 <mat-dialog-content class="mat-typography">
-    <form>
+    <form [formGroup]="agenceForm">
         <div class="form-group">
             <label for="nom">Nom</label>
-            <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom">
+            <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom" required>
         </div>
         <div class="form-group">
             <label for="adresseSiege">Adresse du siège</label>
-            <input class="form-control" [(ngModel)]="data.adresseSiege" name="adresseSiege" id="adresseSiege">
+            <input class="form-control" [(ngModel)]="data.adresseSiege" name="adresseSiege" id="adresseSiege" required>
         </div>
         <div class="form-group">
             <label for="responsable">Responsable</label>
-            <input class="form-control" [(ngModel)]="data.responsable" name="responsable" id="responsable">
+            <input class="form-control" [(ngModel)]="data.responsable" name="responsable" id="responsable" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
             <input class="form-control" [(ngModel)]="data.email" name="email" id="email">
         </div>
-<!--        <div class="form-group">-->
-<!--            <label for="etat">État</label>-->
-<!--            <input class="form-control" [(ngModel)]="data.etat" name="etat" id="etat">-->
-<!--        </div>-->
+    </form>
+    <form>
         <div class="form-group">
             <label for="infoSupp">Informations supplémentaires</label>
             <textarea class="form-control" [(ngModel)]="data.infoSupp" name="infoSupp" id="infoSupp"></textarea>
@@ -48,11 +46,10 @@
                 </div>
             </div>
         </div>
-
     </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
     <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
-    <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+    <button class="btn btn-success" (click)="submitEdit()" [disabled]="agenceForm.invalid || !data.numTels.length">Enregistrer</button>
 </mat-dialog-actions>

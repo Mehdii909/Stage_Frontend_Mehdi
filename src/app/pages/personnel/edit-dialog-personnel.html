@@ -1,14 +1,14 @@
 <h2 mat-dialog-title>Modifier le personnel</h2>
 
 <mat-dialog-content class="mat-typography">
-  <form>
+  <form [formGroup]="personnelForm">
     <div class="form-group">
       <label for="nom">Nom</label>
-      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom">
+      <input class="form-control" [(ngModel)]="data.nom" name="nom" id="nom" required>
     </div>
     <div class="form-group">
       <label for="prenom">Prénom</label>
-      <input class="form-control" [(ngModel)]="data.prenom" name="prenom" id="prenom">
+      <input class="form-control" [(ngModel)]="data.prenom" name="prenom" id="prenom" required>
     </div>
     <div class="form-group">
       <label for="email">Email</label>
@@ -16,12 +16,14 @@
     </div>
     <div class="form-group">
       <label for="fonction">Fonction</label>
-      <input class="form-control" [(ngModel)]="data.fonction" name="fonction" id="fonction">
+      <input class="form-control" [(ngModel)]="data.fonction" name="fonction" id="fonction" >
     </div>
+  </form>
+  <form>
     <div class="form-group">
       <label for="num">Numéros de téléphone</label>
       <div class="input-group mb-2">
-        <input class="form-control" [(ngModel)]="newNum" name="newNum" id="newNum">
+        <input class="form-control" [(ngModel)]="newNum" name="newNum" id="newNum" >
         <div class="input-group-append">
           <button class="btn btn-outline-primary btn-sm" type="button" (click)="addNumTel()">
             <i class="fas fa-plus" aria-hidden="true"></i>
@@ -45,5 +47,5 @@
 
 <mat-dialog-actions align="end">
   <button class="btn btn-danger" (click)="onCancel()" style="margin-right: 6px">Annuler</button>
-  <button class="btn btn-success" (click)="submitEdit()">Enregistrer</button>
+  <button class="btn btn-success" (click)="submitEdit()" [disabled]="personnelForm.invalid || !data.num.length">Enregistrer</button>
 </mat-dialog-actions>

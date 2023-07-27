@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Chauffeur } from '../../models/chauffeur';
-import { ChauffeurService } from '../../services/chauffeur.service';
-import {Agence} from '../../models/agence';
+import { Chauffeur } from 'app/models/chauffeur';
+import { ChauffeurService } from 'app/services/chauffeur.service';
+import { ConfirmDialogComponent } from 'app/pages/confirmDialog/confirmDialog.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-chauffeur',
@@ -10,14 +11,34 @@ import {Agence} from '../../models/agence';
   styleUrls: ['./chauffeur.component.css']
 })
 export class ChauffeurComponent implements OnInit {
-  filteredData: Chauffeur[] = [];
-  private dataSource: Chauffeur[];
+  dataSource = []
+
+  filteredData: any[] = [];
+
   searchText = '';
 
   constructor(
       private chauffeurService: ChauffeurService,
       public dialog: MatDialog
   ) { }
+
+  onSearchChange(): void {
+    // Reset the filteredData array
+    this.filteredData = [];
+
+    // Check if the search text is empty
+    if (!this.searchText) {
+      this.filteredData = this.dataSource;
+      return;
+    }
+
+    // Perform the search based on the searchText
+    this.filteredData = this.dataSource.filter(chauffeur => {
+      // Customize the search criteria as per your requirements
+      const fullSearch = `${chauffeur.nom} ${chauffeur.prenom} ${chauffeur.email}`.toLowerCase();
+      return fullSearch.includes(this.searchText.toLowerCase());
+    });
+  }
 
   ngOnInit(): void {
     this.getAllChauffeurs();
@@ -40,21 +61,25 @@ export class ChauffeurComponent implements OnInit {
     );
   }
 
-  onSearchChange(): void {
-    // Reset the filteredData array
-    this.filteredData = [];
 
-    // Check if the search text is empty
-    if (!this.searchText) {
-      this.filteredData = this.dataSource;
-      return;
-    }
 
-    // Perform the search based on the searchText
-    this.filteredData = this.dataSource.filter(chauffeur => {
-      // Customize the search criteria as per your requirements
-      const fullSearch = `${chauffeur.nom} ${chauffeur.prenom} ${chauffeur.email}`.toLowerCase();
-      return fullSearch.includes(this.searchText.toLowerCase());
+  archiverChauffeur(id) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la suppression',
+        message: 'Êtes-vous sûr de vouloir supprimer ce chauffeur ?',
+        confirmText: 'Supprimer',
+        confirmColor: 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.chauffeurService.archiverChauffeur(id).subscribe((res: any) => {
+          this.refresh();
+        });
+      }
     });
   }
 
@@ -72,18 +97,11 @@ export class ChauffeurComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      this.getAllChauffeurs();
+      this.refresh();
     });
   }
 
-  openEditDialog(
-      id: number,
-      nom: string,
-      prenom: string,
-      email: string,
-      numTels: string[],
-      etat: string,
-  ): void {
+  openEditDialog(id: number, nom: string, prenom: string, email: string, numTels: string[], etat: string): void {
     const dialogRef = this.dialog.open(EditDialogChauffeur, {
       width: '500px',
       data: {
@@ -96,17 +114,13 @@ export class ChauffeurComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.refresh();
-    });
-  }
-
-  // Add any other methods needed for managing chauffeurs
-
-  archiverChauffeur(id: number) {
-    this.chauffeurService.archiverChauffeur(id).subscribe((res: any) => {
-      // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
-      this.refresh();
+    dialogRef.afterClosed().subscribe((result: Chauffeur) => {
+      if (result) {
+        this.chauffeurService.updateChauffeur(result.id, result).subscribe((res: any) => {
+          dialogRef.close();
+          this.refresh();
+        });
+      }
     });
   }
 }
@@ -117,33 +131,47 @@ export class ChauffeurComponent implements OnInit {
   templateUrl: 'dialog-chauffeur.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class DialogChauffeur {
-  // Add the necessary properties for chauffeur creation dialog
+export class DialogChauffeur implements OnInit {
   newNumTel: any;
+  chauffeurForm: FormGroup;
 
   constructor(
       public dialogRef: MatDialogRef<DialogChauffeur>,
       @Inject(MAT_DIALOG_DATA) public data: Chauffeur,
+      private formBuilder: FormBuilder,
       private chauffeurService: ChauffeurService
-  ) {}
+  ) { }
+
+  ngOnInit(): void {
+    this.chauffeurForm = this.formBuilder.group({
+      nom: [this.data.nom, Validators.required],
+      prenom: [this.data.prenom, Validators.required],
+      email: [this.data.email],
+      // Add more form controls for other properties if needed
+    });
+  }
 
   submit() {
-    // Customize the submission logic for adding a chauffeur
-    const chauffeur: { numTels: string[]; nom: string; prenom: string; etat: string; email: string } = {
+    if (this.chauffeurForm.invalid) {
+      return;
+    }
+
+
+
+    const chauff = {
       nom: this.data.nom,
       prenom: this.data.prenom,
       email: this.data.email,
       numTels: this.data.numTels,
-      etat: 'activer', // Assuming the default state is active when adding a new chauffeur
+      etat: 'activer'
     };
 
-    this.chauffeurService.addChauffeur(chauffeur).subscribe((res: any) => {
+    this.chauffeurService.addChauffeur(chauff).subscribe((res: any) => {
       this.dialogRef.close();
     });
   }
 
   onCancel(): void {
-    // Close the dialog without any action
     this.dialogRef.close();
   }
 
@@ -154,7 +182,7 @@ export class DialogChauffeur {
   addNumTel() {
     if (this.newNumTel) {
       this.data.numTels.push(this.newNumTel);
-      this.newNumTel = ''; // Reset the input field
+      this.newNumTel = '';
     }
   }
 }
@@ -165,35 +193,59 @@ export class DialogChauffeur {
   templateUrl: 'edit-dialog-chauffeur.html',
 })
 // tslint:disable-next-line:component-class-suffix
-export class EditDialogChauffeur {
-  // Add the necessary properties for chauffeur edit dialog
+export class EditDialogChauffeur implements OnInit {
   newNumTel: any;
+  chauffeurForm: FormGroup;
 
   constructor(
       public dialogRef: MatDialogRef<EditDialogChauffeur>,
       @Inject(MAT_DIALOG_DATA) public data: Chauffeur,
+      private formBuilder: FormBuilder,
+      public dialog: MatDialog,
       private chauffeurService: ChauffeurService
-  ) {}
+  ) { }
 
-  submitEdit() {
-    // Customize the submission logic for editing a chauffeur
-    const id = this.data.id;
-    const chauffeur: Chauffeur = {
-      id: this.data.id,
-      nom: this.data.nom,
-      prenom: this.data.prenom,
-      email: this.data.email,
-      numTels: this.data.numTels,
-      etat: this.data.etat,
-    };
-
-    this.chauffeurService.updateChauffeur(id, chauffeur).subscribe((res: any) => {
-      this.dialogRef.close();
+  ngOnInit(): void {
+    this.chauffeurForm = this.formBuilder.group({
+      nom: [this.data.nom, Validators.required],
+      prenom: [this.data.prenom, Validators.required],
+      email: [this.data.email],
+      // Add more form controls for other properties if needed
     });
   }
 
+  submitEdit() {
+    // Open a confirmation dialog before submitting the modifications
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Confirmer la modification',
+        message: 'Êtes-vous sûr de vouloir modifier ce chauffeur ?',
+        confirmText: 'Confirmer',
+        confirmColor: 'primary'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // If the user confirms the modification, submit the changes
+        const id = this.data.id;
+        const chauff: Chauffeur = {
+          id: this.data.id,
+          nom: this.data.nom,
+          prenom: this.data.prenom,
+          email: this.data.email,
+          numTels: this.data.numTels,
+          etat: this.data.etat,
+        };
+
+        this.dialogRef.close(chauff);
+      }
+    });
+  }
+
+
   onCancel(): void {
-    // Close the dialog without any action
     this.dialogRef.close();
   }
 
@@ -204,8 +256,7 @@ export class EditDialogChauffeur {
   addNumTel() {
     if (this.newNumTel) {
       this.data.numTels.push(this.newNumTel);
-      this.newNumTel = ''; // Reset the input field
+      this.newNumTel = '';
     }
   }
-
 }
