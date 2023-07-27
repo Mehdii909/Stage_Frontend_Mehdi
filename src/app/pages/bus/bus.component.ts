@@ -171,8 +171,7 @@ export class DialogBus implements OnInit {
     this.busForm = this.formBuilder.group({
       immatriculation: [this.data.immatriculation, Validators.required],
       marqueModele: [this.data.marqueModele, Validators.required],
-      nombrePlaces: [this.data.nombrePlaces, Validators.required],
-      agence: [this.data.agence]
+      nombrePlaces: [this.data.nombrePlaces, Validators.required]
     });
   }
 
@@ -226,7 +225,7 @@ export class EditDialogBus implements OnInit {
     this.agenceService.getAllAgenceEtatActif().subscribe(
         (ag) => {
           // @ts-ignore
-          this.agences = ag.filter(agency => agency.id !== this.data.agence.id);
+          this.agences = ag;
         },
         (error) => {
           console.error(error);
@@ -239,7 +238,7 @@ export class EditDialogBus implements OnInit {
       immatriculation: [this.data.immatriculation, Validators.required],
       marqueModele: [this.data.marqueModele, Validators.required],
       nombrePlaces: [this.data.nombrePlaces, Validators.required],
-      agence: [this.data.agence]
+
     });
   }
 

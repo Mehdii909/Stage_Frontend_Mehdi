@@ -19,6 +19,8 @@ export class ClasseComponent implements OnInit {
   private dataSource: any;
   searchText = '';
 
+  constructor(private classeService: ClasseService,
+              public dialog: MatDialog) { }
 
   onSearchChange() {
     // Reset the filteredData array
@@ -37,18 +39,12 @@ export class ClasseComponent implements OnInit {
       return fullSearch.includes(this.searchText.toLowerCase());
     });
   }
-
-  constructor(private classeService: ClasseService,
-              public dialog: MatDialog) { }
-
   ngOnInit(): void {
     this.getAllClassesActive();
   }
-
   refresh() {
     this.getAllClassesActive();
   }
-
   private getAllClassesActive() {
     this.classeService.getAllClasseEtatActif().subscribe(
         (res: any) => {
@@ -61,7 +57,6 @@ export class ClasseComponent implements OnInit {
         }
     );
   }
-
   archiverClasse(id) {
     // Ouvre le dialogue de confirmation avant de supprimer le produit
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -87,7 +82,6 @@ export class ClasseComponent implements OnInit {
     });
 
   }
-
   openEditDialog(id: number, cycle: string, niveau: string, numClasse: string, etat: string, anneeScolaire: AnneeScolaire): void {
     // @ts-ignore
     const dialogRef = this.dialog.open(EditDialogClasse, {
@@ -117,8 +111,6 @@ export class ClasseComponent implements OnInit {
     });
 
   }
-
-
   openDialog() {
     const dialogRef = this.dialog.open(DialogClasse, {
       width: '500px',
@@ -135,8 +127,6 @@ export class ClasseComponent implements OnInit {
       this.refresh();
     });
   }
-
-
 }
 
 @Component({
@@ -229,10 +219,11 @@ export class EditDialogClasse implements OnInit {
       private anneeScolaireService: AnneeScolaireService) { }
 
   ngOnInit(): void {
+
     this.anneeScolaireService.getAllStationEtatActif().subscribe(
         (an) => {
           // @ts-ignore
-          this.anneeScolaires = an.filter(annee => annee.id !== this.data.anneeScolaire.id);
+          this.anneeScolaires = an ;
         },
         (error) => {
           console.error(error);

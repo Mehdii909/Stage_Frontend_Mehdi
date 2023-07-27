@@ -19,7 +19,6 @@
         <div class="form-group">
             <label for="ans">Ans</label>
             <mat-select class="form-control" [(ngModel)]="data.anneeScolaire" name="ans" id="ans">
-                <mat-option [value]="null">{{ data.anneeScolaire.ans }}</mat-option>
                 <mat-option *ngFor="let an of anneeScolaires" [value]="an">{{ an.ans }}</mat-option>
             </mat-select>
         </div>
