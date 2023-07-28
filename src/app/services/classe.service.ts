@@ -21,6 +21,11 @@ export class ClasseService {
     return this.http.get(environment.url + '/classes/activer', { headers });
   }
 
+  getAllClasseEtatActiverByAnsId(id: number) {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(environment.url + '/classes/activer/' + id, { headers });
+  }
+
   addClasse(classe: { cycle: string; niveau: string; etat: string; numClasse: string }) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<Classe>(environment.url + '/classes', classe, { headers });

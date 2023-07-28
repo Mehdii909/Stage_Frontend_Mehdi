@@ -4,6 +4,8 @@ import { AnneeScolaire } from '../../models/AnneeScolaire';
 import { AnneeScolaireService } from '../../services/annee-scolaire.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmDialogComponent} from '../confirmDialog/confirmDialog.component';
+import {ClasseService} from '../../services/classe.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-annee-scolaire',
@@ -15,7 +17,10 @@ export class AnneeScolaireComponent implements OnInit {
   private dataSource: AnneeScolaire[] = [];
   searchText = '';
 
-  constructor(private anneeScolaireService: AnneeScolaireService, public dialog: MatDialog) { }
+  constructor(private classeService: ClasseService,
+              private anneeScolaireService: AnneeScolaireService,
+              private snackBar: MatSnackBar,
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getAllAnneesScolaires();
@@ -38,30 +43,51 @@ export class AnneeScolaireComponent implements OnInit {
     );
   }
 
-  archiverAnneeScolaire(id: number) {
-    // Ouvre le dialogue de confirmation avant de supprimer le produit
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
-      data: {
-        title: 'Confirmer la suppression',
-        message: 'Êtes-vous sûr de vouloir supprimer cette annee ?',
-        confirmText: 'Supprimer',
-        confirmColor: 'warn'
-      }
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 5000, // Duration in milliseconds (e.g., 5000 = 5 seconds)
+      panelClass: ['custom-snackbar', 'mat-toolbar', 'mat-warn'], // Apply custom CSS classes to the snackbar
+      horizontalPosition: 'right', // Position the snackbar horizontally in the center
+      verticalPosition: 'bottom', // Position the snackbar vertically in the center
     });
-
-    // S'abonne à l'événement après la fermeture du dialogue de confirmation
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result) {
-        // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
-        this.anneeScolaireService.archiverAnneeScolaire(id).subscribe((res: any) => {
-          // Handle success or show notification
-          this.refresh();
-        });
-      }
-    });
-
   }
+
+  archiverAnneeScolaire(id: number) {
+    this.classeService.getAllClasseEtatActiverByAnsId(id).subscribe(
+        (classes: any[]) => {
+          const hasActiveClasses = classes && classes.length > 0;
+          if (hasActiveClasses) {
+            this.showErrorMessage('Impossible de supprimer cette annee scolaire. Des classes actifs sont liés à cette annee scolaire.');
+          } else {
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+              width: '300px',
+              data: {
+                title: 'Confirmer la suppression',
+                message: 'Êtes-vous sûr de vouloir supprimer cette annee ?',
+                confirmText: 'Supprimer',
+                confirmColor: 'warn'
+              }
+            });
+
+            // S'abonne à l'événement après la fermeture du dialogue de confirmation
+            dialogRef.afterClosed().subscribe((result: boolean) => {
+              if (result) {
+                // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
+                this.anneeScolaireService.archiverAnneeScolaire(id).subscribe((res: any) => {
+                  // Handle success or show notification
+                  this.refresh();
+                });
+              }
+            });
+          }
+        },
+        (error) => {
+          // Handle error if there's an issue fetching active buses
+          console.error('Error fetching active buses:', error);
+        }
+    );
+  }
+
   // tslint:disable-next-line:max-line-length
   openEditDialog(id: number, etat: string, ans: string): void {
     const dialogRef = this.dialog.open(EditDialogAnneeScolaire, {

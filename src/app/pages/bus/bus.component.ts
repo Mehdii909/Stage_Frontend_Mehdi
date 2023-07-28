@@ -77,9 +77,9 @@ export class BusComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
+        console.log(result);
         // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
         this.busService.archiverBus(id).subscribe((res: any) => {
-          // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
           this.refresh();
         });
       }
@@ -99,7 +99,6 @@ export class BusComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       this.getAllBuses();
     });
   }

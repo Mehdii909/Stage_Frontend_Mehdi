@@ -21,7 +21,7 @@ export class BusService {
     return this.http.get<Bus>(environment.url + '/buses/' + id, { headers });
   }
 
-    addBus(bus: { agence: Agence; nombrePlaces: number; marqueModele: string; immatriculation: string; etat: string }) {
+  addBus(bus: { agence: Agence; nombrePlaces: number; marqueModele: string; immatriculation: string; etat: string }) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<Bus>(environment.url + '/buses', bus, { headers });
   }
@@ -41,9 +41,14 @@ export class BusService {
     return this.http.get(environment.url + '/buses/activer', { headers });
   }
 
+  getAllBusEtatActiverByAgenceId(id: number) {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.get(environment.url + '/buses/activer/' + id, { headers });
+  }
+
+
   archiverBus(id: number) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.put(environment.url + '/buses/' + id + '/archiver', { headers });
   }
-
 }

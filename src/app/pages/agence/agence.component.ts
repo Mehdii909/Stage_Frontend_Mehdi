@@ -4,6 +4,9 @@ import { Agence } from '../../models/agence';
 import { AgenceService } from '../../services/agence.service';
 import { ConfirmDialogComponent } from 'app/pages/confirmDialog/confirmDialog.component';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {BusService} from '../../services/bus.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-agence',
@@ -12,13 +15,14 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class AgenceComponent implements OnInit {
   dataSource = []
-
   filteredData: any[] = [];
 
   searchText = '';
 
   constructor(
       private agenceService: AgenceService,
+      private busService: BusService,
+      private snackBar: MatSnackBar,
       public dialog: MatDialog
   ) { }
 
@@ -61,26 +65,53 @@ export class AgenceComponent implements OnInit {
     );
   }
 
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 5000, // Duration in milliseconds (e.g., 5000 = 5 seconds)
+      panelClass: ['custom-snackbar', 'mat-toolbar', 'mat-warn'], // Apply custom CSS classes to the snackbar
+      horizontalPosition: 'right', // Position the snackbar horizontally in the center
+      verticalPosition: 'bottom', // Position the snackbar vertically in the center
+    });
+  }
+
   archiverAgence(id) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
-      data: {
-        title: 'Confirmer la suppression',
-        message: 'Êtes-vous sûr de vouloir supprimer cette agence ?',
-        confirmText: 'Supprimer',
-        confirmColor: 'warn'
-      }
-    });
-    // S'abonne à l'événement après la fermeture du dialogue de confirmation
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result) {
-        // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
-        this.agenceService.archiverAgence(id).subscribe((res: any) => {
-          // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
-          this.refresh();
-        });
-      }
-    });
+    // Check if any active buses are linked to the agency
+    this.busService.getAllBusEtatActiverByAgenceId(id).subscribe(
+        (buses: any[]) => {
+          const hasActiveBuses = buses && buses.length > 0;
+          if (hasActiveBuses) {
+            // Display an error message as there are active buses linked to this agency
+            this.showErrorMessage('Impossible de supprimer l\'agence. Des bus actifs sont liés à cette agence.');
+            // Replace this line with your error message display mechanism (e.g., showNotification)
+          } else {
+            // No active buses found, proceed with archiving
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+              width: '300px',
+              data: {
+                title: 'Confirmer la suppression',
+                message: 'Êtes-vous sûr de vouloir supprimer cette agence ?',
+                confirmText: 'Supprimer',
+                confirmColor: 'warn'
+              }
+            });
+
+            // S'abonne à l'événement après la fermeture du dialogue de confirmation
+            dialogRef.afterClosed().subscribe((result: boolean) => {
+              if (result) {
+                // Si l'utilisateur confirme la suppression, appelle le service pour supprimer le produit
+                this.agenceService.archiverAgence(id).subscribe((res: any) => {
+                  // this.showNotification('top', 'right', 'L'eleve a été supprimer', 'danger');
+                  this.refresh();
+                });
+              }
+            });
+          }
+        },
+        (error) => {
+          // Handle error if there's an issue fetching active buses
+          console.error('Error fetching active buses:', error);
+        }
+    );
   }
 
   openDialog(): void {
@@ -98,7 +129,6 @@ export class AgenceComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       this.getAllAgences();
     });
   }

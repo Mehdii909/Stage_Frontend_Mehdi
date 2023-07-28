@@ -1,2 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 
+::ng-deep .custom-snackbar .mat-snack-bar-action button {
+    color: white; /* Set your desired color for the close button */
+}

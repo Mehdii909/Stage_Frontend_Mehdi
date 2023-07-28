@@ -1,0 +1,3 @@
+::ng-deep .custom-snackbar .mat-snack-bar-action button {
+    color: white; /* Set your desired color for the close button */
+}

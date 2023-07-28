@@ -14,12 +14,14 @@ import { HomeComponent } from './home/home.component';
 import { TemplateComponent } from './template/template.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { TokenInterceptor } from './tokeninterceptor';
+
 import { StationComponent } from './pages/station/station.component';
 import { PersonnelComponent } from './pages/personnel/personnel.component';
 import { AgenceComponent } from './pages/agence/agence.component';
 import { BusComponent } from './pages/bus/bus.component';
 import { ChauffeurComponent } from './pages/chauffeur/chauffeur.component';
 import { AnneeScolaireComponent } from './pages/annee-scolaire/annee-scolaire.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   imports: [
@@ -40,6 +42,7 @@ import { AnneeScolaireComponent } from './pages/annee-scolaire/annee-scolaire.co
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatSnackBarModule,
     RouterModule.forRoot([
       {path: 'register', component: UserComponent},
       {path: 'login', component: LoginComponent},
