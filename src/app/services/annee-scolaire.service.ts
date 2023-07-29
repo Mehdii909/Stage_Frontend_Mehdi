@@ -15,9 +15,9 @@ export class AnneeScolaireService {
     return this.http.get<AnneeScolaire[]>(environment.url + '/annees-scolaires', { headers });
   }
 
-  getAllStationEtatActif() {
+  getAllAnneesScolairesEtatActif() {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.get(environment.url + '/annees-scolaires/activer', { headers });
+    return this.http.get<AnneeScolaire[]>(environment.url + '/annees-scolaires/activer', { headers });
   }
 
   addAnneeScolaire(anneeScolaire: {

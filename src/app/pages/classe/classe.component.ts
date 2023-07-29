@@ -150,7 +150,7 @@ export class DialogClasse implements OnInit {
       private anneeScolaireService: AnneeScolaireService) { }
 
   ngOnInit(): void {
-    this.anneeScolaireService.getAllStationEtatActif().subscribe(
+    this.anneeScolaireService.getAllAnneesScolairesEtatActif().subscribe(
         (an) => {
           // @ts-ignore
           this.anneeScolaires = an;
@@ -220,7 +220,7 @@ export class EditDialogClasse implements OnInit {
 
   ngOnInit(): void {
 
-    this.anneeScolaireService.getAllStationEtatActif().subscribe(
+    this.anneeScolaireService.getAllAnneesScolairesEtatActif().subscribe(
         (an) => {
           // @ts-ignore
           this.anneeScolaires = an ;

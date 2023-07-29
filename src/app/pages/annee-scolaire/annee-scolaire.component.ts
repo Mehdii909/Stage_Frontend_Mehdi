@@ -31,7 +31,7 @@ export class AnneeScolaireComponent implements OnInit {
   }
 
   private getAllAnneesScolaires() {
-    this.anneeScolaireService.getAllStationEtatActif().subscribe(
+    this.anneeScolaireService.getAllAnneesScolairesEtatActif().subscribe(
         (res: AnneeScolaire[]) => {
           console.log(res);
           this.dataSource = res;
@@ -123,7 +123,6 @@ export class AnneeScolaireComponent implements OnInit {
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       this.refresh();
     });
   }
@@ -154,46 +153,83 @@ export class AnneeScolaireComponent implements OnInit {
 })
 // tslint:disable-next-line:component-class-suffix
 export class DialogAnneeScolaire implements OnInit {
-
   anneeScolaireForm: FormGroup;
-
   constructor(
       public dialogRef: MatDialogRef<DialogAnneeScolaire>,
       @Inject(MAT_DIALOG_DATA) public data: AnneeScolaire,
       private anneeScolaireService: AnneeScolaireService,
+      private snackBar: MatSnackBar,
       private formBuilder: FormBuilder
-
   ) { }
-
   ngOnInit() {
     this.anneeScolaireForm = this.formBuilder.group({
       ans: ['', [Validators.required, this.academicYearFormatValidator.bind(this)]],
     });
   }
-
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Fermer', {
+      duration: 5000,
+      panelClass: ['mat-toolbar', 'mat-warn'],
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+    });
+  }
   academicYearFormatValidator(control: FormControl): { [key: string]: any } | null {
     const academicYearPattern = /^[0-9]{4}-[0-9]{4}$/;
     const validFormat = academicYearPattern.test(control.value);
 
     return validFormat ? null : { invalidFormat: true };
   }
+  academicYearExistsValidator(control: FormControl): Promise<{ [key: string]: any } | null> {
+    return new Promise((resolve) => {
+      const academicYearValue = control.value;
+      this.anneeScolaireService.getAllAnneesScolairesEtatActif().subscribe(
+          (academicYears: AnneeScolaire[]) => {
+            const exists = academicYears.some((academicYear) => academicYear.ans === academicYearValue);
 
+            if (exists) {
+              resolve({ alreadyExists: true });
+            } else {
+              resolve(null);
+            }
+          },
+          (error) => {
+            console.error(error);
+            resolve(null); // Handle error here or return a generic error message
+          }
+      );
+    });
+  }
   submit() {
     if (this.anneeScolaireForm.invalid) {
       return; // Empêche la soumission si le formulaire est invalide
     }
 
-    const anneeScolaire: { ans: string; etat: string } = {
-      etat: 'activer',
-      ans: this.anneeScolaireForm.value.ans
-    };
+    const academicYearControl = this.anneeScolaireForm.get('ans');
 
-    this.anneeScolaireService.addAnneeScolaire(anneeScolaire).subscribe((res: any) => {
-      // Handle success or show notification
-      this.dialogRef.close();
-    });
+    if (academicYearControl instanceof FormControl) {
+      this.academicYearExistsValidator(academicYearControl)
+          .then(isYearExists => {
+            if (isYearExists) {
+              this.showErrorMessage('Cette annee scolaire existe déjà.');
+            } else {
+              const anneeScolaire: { ans: string; etat: string } = {
+                etat: 'activer',
+                ans: this.anneeScolaireForm.value.ans
+              };
+
+              this.anneeScolaireService.addAnneeScolaire(anneeScolaire).subscribe((res: any) => {
+                // Handle success or show notification
+                this.dialogRef.close();
+              });
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            this.showErrorMessage('"Une erreur s\'est produite lors de la vérification de l\'année scolaire.');
+          });
+    }
   }
-
   onCancel(): void {
     // Close the dialog without any action
     this.dialogRef.close();
