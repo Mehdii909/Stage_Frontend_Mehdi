@@ -6,6 +6,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog
 import {Eleve, User} from '../../models/eleve';
 import {ConfirmDialogComponent} from '../confirmDialog/confirmDialog.component';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {catchError, map} from 'rxjs';
 
 @Component({
   selector: 'app-eleve',
@@ -195,36 +196,58 @@ export class DialogEleve implements OnInit {
       // If the form is invalid (some required fields are empty), do not submit
       return;
     }
-    // Generate a random password
     const randomPassword = Math.random().toString(36).slice(-8);
-    // Assign values to user properties
-    // @ts-ignore
-    this.data.user = {
-      login: `${this.data.prenom}.${this.data.nom}`,
-      password: randomPassword,
-      userRole: 'ROLE_ELEVE'
-    };
 
-    this.data.etat = 'activer';
+    this.eleveService.getEleveByNomAndPrenom(this.data.nom, this.data.prenom).subscribe(
+        (eleveExists) => {
+          if (eleveExists.length > 0) {
+            // An eleve with the same prenom and nom exists, modify the login
+            // Generate a random number between 1 and 100
+            const randomNum = Math.floor(Math.random() * 10000) + 1;
+            // @ts-ignore
+            this.data.user = {
+              // login: `${this.data.email}`,
+              login: `${this.data.nom}.${this.data.prenom}.${randomNum}`,
+              password: randomPassword,
+              userRole: 'ROLE_ELEVE'
+            };
+          } else {
+            // No eleve with the same prenom and nom exists, use the original login
+            // @ts-ignore
+            this.data.user = {
+              // login: `${this.data.email}`,
+              login: `${this.data.nom}.${this.data.prenom}`,
+              password: randomPassword,
+              userRole: 'ROLE_ELEVE'
+            };
+          }
 
-    const el = {
-      nom: this.data.nom,
-      prenom: this.data.prenom,
-      nomPere: this.data.nomPere,
-      prenomPere: this.data.prenomPere,
-      nomMere: this.data.nomMere,
-      prenomMere: this.data.prenomMere,
-      nationalite: this.data.nationalite,
-      email: this.data.email,
-      etat: this.data.etat,
-      numTels: this.data.numTels,
-      user: this.data.user,
-    };
+          const el = {
+            nom: this.data.nom,
+            prenom: this.data.prenom,
+            nomPere: this.data.nomPere,
+            prenomPere: this.data.prenomPere,
+            nomMere: this.data.nomMere,
+            prenomMere: this.data.prenomMere,
+            nationalite: this.data.nationalite,
+            email: this.data.email,
+            etat: 'activer',
+            numTels: this.data.numTels,
+            user: this.data.user,
+          };
 
-    this.eleveService.addEleve(el).subscribe((res: any) => {
-      // this.showNotification('top', 'right', 'L'eleve' a été ajouter', 'success');
-      this.dialogRef.close();
-    });
+          this.eleveService.addEleve(el).subscribe((res: any) => {
+            // this.showNotification('top', 'right', 'L'eleve' a été ajouter', 'success');
+            console.log('hi', el.user.login, eleveExists);
+            this.dialogRef.close();
+          });
+        },
+        (error) => {
+          console.error('Error while checking eleve existence:', error);
+          // Optionally, you can show a snackbar with the error message here
+          // this.showErrorMessage('An error occurred while checking the eleve existence. Please try again.');
+        }
+    );
   }
 
   onCancel(): void {
