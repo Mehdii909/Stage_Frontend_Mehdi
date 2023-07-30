@@ -198,24 +198,24 @@ export class DialogEleve implements OnInit {
     }
     const randomPassword = Math.random().toString(36).slice(-8);
 
-    this.eleveService.getEleveByNomAndPrenom(this.data.nom, this.data.prenom).subscribe(
-        (eleveExists) => {
-          if (eleveExists.length > 0) {
-            // An eleve with the same prenom and nom exists, modify the login
-            // Generate a random number between 1 and 100
+    const login = `${this.data.nom}.${this.data.prenom}`;
+
+    this.eleveService.getUserByLogin(login).subscribe(
+        (user) => {
+          if (user.length > 0 ) {
+            // A user with the same login (nom.prenom) exists, modify the login
+            // Generate a random number between 1 and 10000
             const randomNum = Math.floor(Math.random() * 10000) + 1;
             // @ts-ignore
             this.data.user = {
-              // login: `${this.data.email}`,
               login: `${this.data.nom}.${this.data.prenom}.${randomNum}`,
               password: randomPassword,
               userRole: 'ROLE_ELEVE'
             };
           } else {
-            // No eleve with the same prenom and nom exists, use the original login
+            // No user with the same login (nom.prenom) exists, use the original login
             // @ts-ignore
             this.data.user = {
-              // login: `${this.data.email}`,
               login: `${this.data.nom}.${this.data.prenom}`,
               password: randomPassword,
               userRole: 'ROLE_ELEVE'
@@ -238,14 +238,14 @@ export class DialogEleve implements OnInit {
 
           this.eleveService.addEleve(el).subscribe((res: any) => {
             // this.showNotification('top', 'right', 'L'eleve' a été ajouter', 'success');
-            console.log('hi', el.user.login, eleveExists);
+            console.log('hi', el.user.login, user);
             this.dialogRef.close();
           });
         },
         (error) => {
-          console.error('Error while checking eleve existence:', error);
+          console.error('Error while checking user existence:', error);
           // Optionally, you can show a snackbar with the error message here
-          // this.showErrorMessage('An error occurred while checking the eleve existence. Please try again.');
+          // this.showErrorMessage('An error occurred while checking the user existence. Please try again.');
         }
     );
   }

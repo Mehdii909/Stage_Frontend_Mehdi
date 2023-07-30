@@ -53,15 +53,14 @@ export class EleveService {
     return this.http.put(environment.url + '/eleves/' + id, eleve , { headers })
   }
 
-  getEleveByNomAndPrenom(nom: string, prenom: string): Observable<any> {
+  getUserByLogin(login: string): Observable<any> {
     const headers = new HttpHeaders()
         .set('Content-Type', 'application/json');
 
     const params = new HttpParams()
-        .set('nom', nom)
-        .set('prenom', prenom);
+        .set('login', login);
 
-    return this.http.get(environment.url + '/eleves/by-nom-prenom', { headers, params });
+    return this.http.get(environment.url + '/users/by-login', { headers, params });
   }
 
 }

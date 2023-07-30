@@ -47,9 +47,6 @@ export class PersonnelComponent implements OnInit {
     });
   }
 
-
-
-
   ngOnInit(): void {
     this.getAllPersonnelsActive();
     console.log(this.dataSource);
@@ -97,7 +94,6 @@ export class PersonnelComponent implements OnInit {
     });
 
   }
-
 
   openDialog() {
     const dialogRef = this.dialog.open(DialogPersonnel, {
@@ -193,29 +189,54 @@ export class DialogPersonnel implements OnInit {
       return;
     }
     const randomPassword = Math.random().toString(36).slice(-8);
+    const login = `${this.data.nom}.${this.data.prenom}`;
 
-    // @ts-ignore
-    this.data.user = {
-      login: `${this.data.prenom}.${this.data.nom}`,
-      password: randomPassword,
-      userRole: 'ROLE_PERSONNEL'
-    };
+    this.personnelService.getUserByLogin(login).subscribe(
+        (user) => {
+          if (user.length > 0 ) {
+            // A user with the same login (nom.prenom) exists, modify the login
+            // Generate a random number between 1 and 10000
+            const randomNum = Math.floor(Math.random() * 10000) + 1;
+            // @ts-ignore
+            this.data.user = {
+              // login: `${this.data.email}`,
+              login: `${this.data.nom}.${this.data.prenom}.${randomNum}`,
+              password: randomPassword,
+              userRole: 'ROLE_PERSONNEL'
+            };
+          } else {
+            // No eleve with the same prenom and nom exists, use the original login
+            // @ts-ignore
+            this.data.user = {
+              // login: `${this.data.email}`,
+              login: `${this.data.nom}.${this.data.prenom}`,
+              password: randomPassword,
+              userRole: 'ROLE_PERSONNEL'
+            };
+          }
 
-    this.data.etat = 'activer';
+          const perso = {
+            nom: this.data.nom,
+            prenom: this.data.prenom,
+            email: this.data.email,
+            fonction: this.data.fonction,
+            etat: 'activer',
+            num: this.data.num,
+            user: this.data.user,
+          };
 
-    const perso = {
-      nom: this.data.nom,
-      prenom: this.data.prenom,
-      email: this.data.email,
-      fonction: this.data.fonction,
-      etat: this.data.etat,
-      num: this.data.num,
-      user: this.data.user,
-    };
-
-    this.personnelService.addPersonnel(perso).subscribe((res: any) => {
-      this.dialogRef.close();
-    });
+          this.personnelService.addPersonnel(perso).subscribe((res: any) => {
+            // this.showNotification('top', 'right', 'L'eleve' a été ajouter', 'success');
+            console.log('hi', perso.user.login, user);
+            this.dialogRef.close();
+          });
+        },
+        (error) => {
+          console.error('Error while checking eleve existence:', error);
+          // Optionally, you can show a snackbar with the error message here
+          // this.showErrorMessage('An error occurred while checking the eleve existence. Please try again.');
+        }
+    );
   }
 
   onCancel(): void {

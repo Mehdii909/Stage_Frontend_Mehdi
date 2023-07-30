@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {User} from '../models/personnel';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,16 @@ export class PersonnelService {
     const headers = new HttpHeaders()
         .set('Content-Type', 'application/json');
     return this.http.get(environment.url + '/personnels', { headers });
+  }
+
+  getUserByLogin(login: string): Observable<any> {
+    const headers = new HttpHeaders()
+        .set('Content-Type', 'application/json');
+
+    const params = new HttpParams()
+        .set('login', login);
+
+    return this.http.get(environment.url + '/users/by-login', { headers, params });
   }
 
   getAllPersonnelEtatActif() {
